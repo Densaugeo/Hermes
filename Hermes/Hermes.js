@@ -34,16 +34,11 @@
  * 17 Apr 2013
  */
 CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, style) {
-  // Validate input.
-  if(text     && typeof text.valueOf()     !== 'string') {throw 'Invalid type for text.  Must be a string.';}
-  if(x        && typeof x.valueOf()        !== 'number') {throw 'Invalid type for x.  Must be a number.';}
-  if(y        && typeof y.valueOf()        !== 'number') {throw 'Invalid type for y.  Must be a number.';}
-  if(maxWidth && typeof maxWidth.valueOf() !== 'number') {throw 'Invalid type for maxWidth.  Must be a number.';}
-  
-  // maxWidth defaults to width of text (i.e. no effect)
-  if(maxWidth == null) {
-    maxWidth = text.length;
-  }
+  text = String(text) || ' ';
+  x = Number(x) || 0;
+  y = Number(y) || 0;
+  // If undefined (or zero), maxWidth defaults to width of text (i.e. no effect)
+  maxWidth = Number(maxWidth) || text.length;
   
   if(text.length <= 0 || maxWidth <= 0) {
     return;
