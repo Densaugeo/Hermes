@@ -1,5 +1,7 @@
 # Misc-JS
 
+[![Code Climate](https://codeclimate.com/github/Densaugeo/Misc-JS/badges/gpa.svg)](https://codeclimate.com/github/Densaugeo/Misc-JS)
+
 Miscellanous useful JavaScripts
 
 ## PersistentWS
