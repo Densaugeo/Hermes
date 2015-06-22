@@ -11,8 +11,9 @@
  * @example ctx.hermesDraw('x', 100, 200); // Draws an 'x' with its top left corner at 100, 200
  * @example ctx.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
  * @example ctx.hermesDraw('Hello world!', 100, 200, 7); // Draws 'Hello w' starting at 100, 200
- * @example ctx.hermesDraw('Hello world!', 100, 200, 0); // Draws 'Hello world!' starting at 100, 200
- * @example ctx.hermesDraw('Hello world!', 100, 200, 0, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
+ * @example ctx.hermesDraw('Hello world!', 100, 200, 0); // Draws nothing
+ * @example ctx.hermesDraw('Hello world!', 100, 200, null); // Draws 'Hello world!' starting at 100, 200
+ * @example ctx.hermesDraw('Hello world!', 100, 200, null, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
  */
 
 // @method proto undefined hermesDraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font
@@ -20,8 +21,12 @@ CanvasRenderingContext2D.prototype.hermesDraw = function hermesDraw(text, x, y, 
   text = String(text) || ' ';
   x = Number(x) || 0;
   y = Number(y) || 0;
-  // If undefined (or zero), maxWidth defaults to width of text (i.e. no effect)
-  maxWidth = Number(maxWidth) || text.length;
+  
+  // If null, undefined, or NaN, maxWidth defaults to width of text (i.e. no effect)
+  if(maxWidth === undefined || maxWidth === null || maxWidth === NaN) {
+    maxWidth = text.length;
+  }
+  maxWidth = Number(maxWidth) || 0;
   
   if(text.length <= 0 || maxWidth <= 0) {
     return;

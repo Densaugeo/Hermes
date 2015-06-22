@@ -19,8 +19,9 @@ var ctx = someCanvasElement.getContext('2d');
 ctx.hermesDraw('x', 100, 200); // Draws an 'x' with its top left corner at 100, 200
 ctx.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
 ctx.hermesDraw('Hello world!', 100, 200, 7); // Draws 'Hello w' starting at 100, 200
-ctx.hermesDraw('Hello world!', 100, 200, 0); // Draws 'Hello world!' starting at 100, 200
-ctx.hermesDraw('Hello world!', 100, 200, 0, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
+ctx.hermesDraw('Hello world!', 100, 200, 0); // Draws nothing
+ctx.hermesDraw('Hello world!', 100, 200, null); // Draws 'Hello world!' starting at 100, 200
+ctx.hermesDraw('Hello world!', 100, 200, null, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
 ```
 
 #### Methods
