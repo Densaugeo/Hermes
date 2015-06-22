@@ -23,7 +23,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function hermesDraw(text, x, y, 
   y = Number(y) || 0;
   
   // If null, undefined, or NaN, maxWidth defaults to width of text (i.e. no effect)
-  if(maxWidth === undefined || maxWidth === null || maxWidth === NaN) {
+  if(maxWidth === undefined || maxWidth === null || maxWidth.isNaN()) {
     maxWidth = text.length;
   }
   maxWidth = Number(maxWidth) || 0;
