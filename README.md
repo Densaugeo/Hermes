@@ -2,11 +2,11 @@
 
 Miscellanous useful JavaScripts
 
-## PersistentWS.js
+## PersistentWS
 
 Provides a construcotr for WebSockets that automatically attempt to reconnect after being disconnected. Reconnection times start at ~5s for the first attempt, double after each failed attempt, and are randomized by +/- 10% to prevent clients from reconnecting at the exact same time after a server event.
 
-To use, add to your webserver root and include this HTML/JS:
+To use, add PersistentWS/PersistentWS.js from this repo to your webserver root and include this HTML/JS:
 
 ~~~
 <script type="text/javascript" src="/PersistentWS.js"></script>
