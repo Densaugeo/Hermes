@@ -32,20 +32,24 @@ var PersistentWS = (function() { // Module pattern
     this.attempts = 0;
     
     // @prop WebSocket socket -- The actual WebSocket. Events registered directly to the raw socket will be lost after reconnections
-    this.socket;
+    this.socket = undefined;
     
     // @prop [[String, Function, Boolean]] _listeners -- For internal use. Array of .addEventListener arguments
     this._listeners = [];
     
     // @method undefined _connect() -- For internal use
     this._connect = function _connect() {
-      self.silent || console.log('Opening WebSocket to ' + self.url);
+      if(!self.silent) {
+        console.log('Opening WebSocket to ' + self.url);
+      }
       
       self.socket = new WebSocket(self.url);
       
       // Reset .attempts counter on successful connection
       self.socket.addEventListener('open', function() {
-        self.silent || console.log('WebSocket connected to ' + self.url);
+        if(!self.silent) {
+          console.log('WebSocket connected to ' + self.url);
+        }
         
         self.attempts = 0;
       });
@@ -57,7 +61,9 @@ var PersistentWS = (function() { // Module pattern
         // Retry time is randomized +/- 10% to prevent clients reconnecting at the exact same time after a server event
         retryTime += Math.floor(Math.random()*retryTime/5 - retryTime/10);
         
-        self.silent || console.log('WebSocket disconnected, attempting to reconnect in ' + retryTime + 'ms...');
+        if(!self.silent) {
+          console.log('WebSocket disconnected, attempting to reconnect in ' + retryTime + 'ms...');
+        }
         
         setTimeout(self._connect, retryTime);
       });
@@ -122,6 +128,6 @@ var PersistentWS = (function() { // Module pattern
   return PersistentWS;
 })(); // Module pattern
 
-if(typeof module != 'undefined' && module != null && module.exports) {
+if(typeof module !== 'undefined' && module !== null && module.exports) {
   module.exports = PersistentWS;
 }
