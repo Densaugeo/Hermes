@@ -1,22 +1,22 @@
 /**
- * This is essentilly a hackish raster font for html canvases.
- * Characters are 8 pixels wide; lines are 12 pixels high.
- * 
- * Syntax:
- * [CanvasRenderingContext2D instance].hermesDraw(text, x, y, maxWidth);
- * 'test' is a string of one or more chars
- * 'x' and 'y' are the coordinates of the top left corner of the first char
- * 'maxWidth' is the maximum string width, in number of characters
- * 
- * Examples:
- * some_context.hermesDraw('x', 100, 200); // Draws an 'x' with its top left corner at 100, 200
- * some_context.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
- * some_context.hermesDraw('Hello world!', 100, 200, 7); // Draws 'Hello w' starting at 100, 200
- * 
- * by Densaugeo
- * 17 Apr 2013
+ * @description This is essentilly a hackish raster font for html canvases
+ * @description Characters are 8 pixels wide; lines are 12 pixels high
+ * @description Adds two methods to the browser's CanvasRenderingContext2D prototype
  */
-CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, style) {
+
+/**
+ * @module CanvasRenderingContext2D
+ * 
+ * @example var ctx = someCanvasElement.getContext('2d');
+ * @example ctx.hermesDraw('x', 100, 200); // Draws an 'x' with its top left corner at 100, 200
+ * @example ctx.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
+ * @example ctx.hermesDraw('Hello world!', 100, 200, 7); // Draws 'Hello w' starting at 100, 200
+ * @example ctx.hermesDraw('Hello world!', 100, 200, 0); // Draws 'Hello world!' starting at 100, 200
+ * @example ctx.hermesDraw('Hello world!', 100, 200, 0, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
+ */
+
+// @method proto undefined hermesDraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font
+CanvasRenderingContext2D.prototype.hermesDraw = function hermesDraw(text, x, y, maxWidth, style) {
   text = String(text) || ' ';
   x = Number(x) || 0;
   y = Number(y) || 0;
@@ -757,6 +757,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
   // End of hermesDraw()
 }
 
+// @method proto undefined hermesRedraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font, clearing the area underneath
 CanvasRenderingContext2D.prototype.hermesRedraw = function hermesRedraw(text, x, y, maxWidth, style) {
   this.clearRect(x, y, 8*(maxWidth || text.length), 12);
   this.hermesDraw(text, x, y, maxWidth, style);
