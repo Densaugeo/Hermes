@@ -33,8 +33,7 @@
  * by Densaugeo
  * 17 Apr 2013
  */
-CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, style)
-{
+CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, style) {
   // Validate input.
   if(text     && typeof text.valueOf()     !== 'string') {throw 'Invalid type for text.  Must be a string.';}
   if(x        && typeof x.valueOf()        !== 'number') {throw 'Invalid type for x.  Must be a number.';}
@@ -54,8 +53,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
     this.fillStyle = style;
   }
   
-  switch(text.charCodeAt(0))
-  {
+  switch(text.charCodeAt(0)) {
     case 32:    // ' '
       break;
     case 33:    // '!'
