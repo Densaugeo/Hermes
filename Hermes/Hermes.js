@@ -26,9 +26,9 @@
  * 'maxWidth' is the maximum string width, in number of characters
  * 
  * Examples:
- * some_context.hermesDraw("x", 100, 200); // Draws an "x" with its top left corner at 100, 200
- * some_context.hermesDraw("Hello world!", 100, 200); // Draws "Hello world!" starting at 100, 200
- * some_context.hermesDraw("Hello world!", 100, 200, 7); // Draws "Hello w" starting at 100, 200
+ * some_context.hermesDraw('x', 100, 200); // Draws an 'x' with its top left corner at 100, 200
+ * some_context.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
+ * some_context.hermesDraw('Hello world!', 100, 200, 7); // Draws 'Hello w' starting at 100, 200
  * 
  * by Densaugeo
  * 17 Apr 2013
@@ -36,40 +36,46 @@
 CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, style)
 {
   // Validate input.
-  if(text     && typeof text.valueOf()     !== "string") {throw "Invalid type for text.  Must be a string.";}
-  if(x        && typeof x.valueOf()        !== "number") {throw "Invalid type for x.  Must be a number.";}
-  if(y        && typeof y.valueOf()        !== "number") {throw "Invalid type for y.  Must be a number.";}
-  if(maxWidth && typeof maxWidth.valueOf() !== "number") {throw "Invalid type for maxWidth.  Must be a number.";}
+  if(text     && typeof text.valueOf()     !== 'string') {throw 'Invalid type for text.  Must be a string.';}
+  if(x        && typeof x.valueOf()        !== 'number') {throw 'Invalid type for x.  Must be a number.';}
+  if(y        && typeof y.valueOf()        !== 'number') {throw 'Invalid type for y.  Must be a number.';}
+  if(maxWidth && typeof maxWidth.valueOf() !== 'number') {throw 'Invalid type for maxWidth.  Must be a number.';}
   
   // maxWidth defaults to width of text (i.e. no effect)
-  if(maxWidth == null) maxWidth = text.length;
+  if(maxWidth == null) {
+    maxWidth = text.length;
+  }
   
-  if(text.length <= 0 || maxWidth <= 0) return;
+  if(text.length <= 0 || maxWidth <= 0) {
+    return;
+  }
   
-  if(style) this.fillStyle = style;
+  if(style) {
+    this.fillStyle = style;
+  }
   
   switch(text.charCodeAt(0))
   {
-    case 32:    // " "
+    case 32:    // ' '
       break;
-    case 33:    // "!"
+    case 33:    // '!'
       this.fillRect(x + 1, y +  2, 4,  3);
       this.fillRect(x + 2, y +  1, 2,  6);
       this.fillRect(x + 2, y +  8, 2,  2);
       break;
-    case 34:    // """
+    case 34:    // '"'
       this.fillRect(x + 1, y +  1, 2,  3);
       this.fillRect(x + 2, y +  4, 1,  1);
       this.fillRect(x + 5, y +  1, 2,  3);
       this.fillRect(x + 5, y +  4, 1,  1);
       break;
-    case 35:    // "#"
+    case 35:    // '#'
       this.fillRect(x + 1, y +  1, 2,  9);
       this.fillRect(x    , y +  3, 7,  1);
       this.fillRect(x + 4, y +  1, 2,  9);
       this.fillRect(x    , y +  7, 7,  1);
       break;
-    case 36:    // "$"
+    case 36:    // '$'
       this.fillRect(x + 2, y     , 2,  2);
       this.fillRect(x + 1, y +  2, 5,  1);
       this.fillRect(x    , y +  3, 2,  2);
@@ -78,7 +84,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  8, 5,  1);
       this.fillRect(x + 2, y +  9, 2,  2);
       break;
-    case 37:    // "%"
+    case 37:    // '%'
       this.fillRect(x    , y +  3, 2,  2);
       this.fillRect(x + 5, y +  3, 1,  1);
       this.fillRect(x + 4, y +  4, 2,  1);
@@ -89,7 +95,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  9, 1,  1);
       this.fillRect(x + 4, y +  8, 2,  2);
       break;
-    case 38:    // "&"
+    case 38:    // '&'
       this.fillRect(x + 1, y +  1, 3,  1);
       this.fillRect(x    , y +  2, 2,  2);
       this.fillRect(x + 3, y +  2, 2,  2);
@@ -102,25 +108,25 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 1, y +  9, 3,  1);
       this.fillRect(x + 5, y +  9, 2,  1);
       break;
-    case 39:    // "'"
+    case 39:    // '''
       this.fillRect(x + 2, y +  1, 2,  3);
       this.fillRect(x + 1, y +  4, 2,  1);
       break;
-    case 40:    // "("
+    case 40:    // '('
       this.fillRect(x + 4, y +  1, 2,  1);
       this.fillRect(x + 3, y +  2, 2,  1);
       this.fillRect(x + 2, y +  3, 2,  5);
       this.fillRect(x + 3, y +  8, 2,  1);
       this.fillRect(x + 4, y +  9, 2,  1);
       break;
-    case 41:    // ")"
+    case 41:    // ')'
       this.fillRect(x + 2, y +  1, 2,  1);
       this.fillRect(x + 3, y +  2, 2,  1);
       this.fillRect(x + 4, y +  3, 2,  5);
       this.fillRect(x + 3, y +  8, 2,  1);
       this.fillRect(x + 2, y +  9, 2,  1);
       break;
-    case 42:    // "*"
+    case 42:    // '*'
       this.fillRect(x + 1, y +  3, 2,  1);
       this.fillRect(x + 5, y +  3, 2,  1);
       this.fillRect(x + 2, y +  4, 4,  3);
@@ -128,21 +134,21 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 1, y +  7, 2,  1);
       this.fillRect(x + 5, y +  7, 2,  1);
       break;
-    case 43:    // "+"
+    case 43:    // '+'
       this.fillRect(x + 3, y +  3, 2,  5);
       this.fillRect(x + 1, y +  5, 6,  1);
       break;
-    case 44:    // ","
+    case 44:    // ','
       this.fillRect(x + 2, y +  8, 3,  2);
       this.fillRect(x + 1, y +  10, 2,  1);
       break;
-    case 45:    // "-"
+    case 45:    // '-'
       this.fillRect(x    , y +  5, 7,  1);
       break;
-    case 46:    // "."
+    case 46:    // '.'
       this.fillRect(x + 2, y +  8, 3,  2);
       break;
-    case 47:    // "/"
+    case 47:    // '/'
       this.fillRect(x + 6, y +  2, 1,  1);
       this.fillRect(x + 5, y +  3, 2,  1);
       this.fillRect(x + 4, y +  4, 2,  1);
@@ -152,7 +158,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  8, 2,  1);
       this.fillRect(x    , y +  9, 1,  1);
       break;
-    case 48:    // "0"
+    case 48:    // '0'
       this.fillRect(x + 1, y +  1, 5,  1);
       this.fillRect(x    , y +  2, 2,  7);
       this.fillRect(x + 2, y +  6, 1,  2);
@@ -161,13 +167,13 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  2, 2,  7);
       this.fillRect(x + 1, y +  9, 5,  1);
       break;
-    case 49:    // "1"
+    case 49:    // '1'
       this.fillRect(x    , y +  3, 2,  1);
       this.fillRect(x + 2, y +  2, 2,  7);
       this.fillRect(x + 3, y +  1, 1,  1);
       this.fillRect(x    , y +  9, 6,  1);
       break;
-    case 50:    // "2"
+    case 50:    // '2'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x    , y +  2, 2,  2);
       this.fillRect(x + 4, y +  2, 2,  3);
@@ -178,7 +184,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  8, 2,  1);
       this.fillRect(x    , y +  9, 6,  1);
       break;
-    case 51:    // "3"
+    case 51:    // '3'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x    , y +  2, 2,  1);
       this.fillRect(x + 4, y +  2, 2,  3);
@@ -187,7 +193,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  8, 2,  1);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 52:    // "4"
+    case 52:    // '4'
       this.fillRect(x + 4, y +  1, 2,  8);
       this.fillRect(x + 3, y +  2, 1,  1);
       this.fillRect(x + 2, y +  3, 2,  1);
@@ -196,7 +202,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  6, 7,  1);
       this.fillRect(x + 3, y +  9, 4,  1);
       break;
-    case 53:    // "5"
+    case 53:    // '5'
       this.fillRect(x    , y +  1, 6,  1);
       this.fillRect(x    , y +  2, 2,  3);
       this.fillRect(x    , y +  5, 5,  1);
@@ -204,7 +210,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  8, 2,  1);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 54:    // "6"
+    case 54:    // '6'
       this.fillRect(x + 2, y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  1);
       this.fillRect(x    , y +  3, 2,  6);
@@ -212,7 +218,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  6, 2,  3);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 55:    // "7"
+    case 55:    // '7'
       this.fillRect(x    , y +  1, 7,  1);
       this.fillRect(x    , y +  2, 2,  2);
       this.fillRect(x + 5, y +  2, 2,  3);
@@ -220,7 +226,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 3, y +  6, 2,  1);
       this.fillRect(x + 2, y +  7, 2,  3);
       break;
-    case 56:    // "8"
+    case 56:    // '8'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x    , y +  2, 2,  3);
       this.fillRect(x + 4, y +  2, 2,  3);
@@ -231,7 +237,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  6, 2,  3);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 57:    // "9"
+    case 57:    // '9'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x    , y +  2, 2,  3);
       this.fillRect(x + 4, y +  2, 2,  3);
@@ -240,20 +246,20 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 2, y +  8, 2,  1);
       this.fillRect(x + 1, y +  9, 3,  1);
       break;
-    case 57:    // "9"
+    case 57:    // '9'
       this.fillRect(x + 1, y +  1, 4,  1);
       break;
-    case 58:    // ":"
+    case 58:    // ':'
       this.fillRect(x + 2, y +  3, 3,  2);
       this.fillRect(x + 2, y +  7, 3,  2);
       break;
-    case 59:    // ";"
+    case 59:    // ';'
       this.fillRect(x + 2, y +  3, 3,  2);
       this.fillRect(x + 2, y +  7, 3,  2);
       this.fillRect(x + 3, y +  9, 2,  1);
       this.fillRect(x + 2, y + 10, 2,  1);
       break;
-    case 60:    // "<"
+    case 60:    // '<'
       this.fillRect(x + 4, y +  1, 2,  1);
       this.fillRect(x + 3, y +  2, 2,  1);
       this.fillRect(x + 2, y +  3, 2,  1);
@@ -264,11 +270,11 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 3, y +  8, 2,  1);
       this.fillRect(x + 4, y +  9, 2,  1);
       break;
-    case 61:    // "="
+    case 61:    // '='
       this.fillRect(x + 1, y +  4, 6,  1);
       this.fillRect(x + 1, y +  6, 6,  1);
       break;
-    case 62:    // ">"
+    case 62:    // '>'
       this.fillRect(x + 1, y +  1, 2,  1);
       this.fillRect(x + 2, y +  2, 2,  1);
       this.fillRect(x + 3, y +  3, 2,  1);
@@ -279,7 +285,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 2, y +  8, 2,  1);
       this.fillRect(x + 1, y +  9, 2,  1);
       break;
-    case 63:    // "?"
+    case 63:    // '?'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x    , y +  2, 2,  1);
       this.fillRect(x + 4, y +  2, 2,  2);
@@ -287,21 +293,21 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 2, y +  5, 2,  2);
       this.fillRect(x + 2, y +  8, 2,  2);
       break;
-    case 64:    // "@"
+    case 64:    // '@'
       this.fillRect(x + 1, y +  1, 5,  1);
       this.fillRect(x    , y +  2, 2,  7);
       this.fillRect(x + 5, y +  2, 2,  2);
       this.fillRect(x + 3, y +  4, 4,  3);
       this.fillRect(x + 1, y +  9, 5,  1);
       break;
-    case 65:    // "A"
+    case 65:    // 'A'
       this.fillRect(x + 2, y +  1, 2,  1);
       this.fillRect(x + 1, y +  2, 4,  1);
       this.fillRect(x    , y +  3, 2,  7);
       this.fillRect(x + 4, y +  3, 2,  7);
       this.fillRect(x + 2, y +  6, 2,  1);
       break;
-    case 66:    // "B"
+    case 66:    // 'B'
       this.fillRect(x    , y +  1, 6,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 5, y +  2, 2,  3);
@@ -309,7 +315,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  6, 2,  3);
       this.fillRect(x    , y +  9, 6,  1);
       break;
-    case 67:    // "C"
+    case 67:    // 'C'
       this.fillRect(x + 2, y +  1, 4,  1);
       this.fillRect(x + 1, y +  2, 2,  1);
       this.fillRect(x + 5, y +  2, 2,  2);
@@ -318,7 +324,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 1, y +  8, 2,  1);
       this.fillRect(x + 2, y +  9, 4,  1);
       break;
-    case 68:    // "D"
+    case 68:    // 'D'
       this.fillRect(x    , y +  1, 5,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 4, y +  2, 2,  1);
@@ -326,7 +332,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  8, 2,  1);
       this.fillRect(x    , y +  9, 5,  1);
       break;
-    case 69:    // "E"
+    case 69:    // 'E'
       this.fillRect(x    , y +  1, 7,  1);
       this.fillRect(x + 6, y +  2, 1,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
@@ -335,7 +341,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 6, y +  8, 1,  1);
       this.fillRect(x    , y +  9, 7,  1);
       break;
-    case 70:    // "F"
+    case 70:    // 'F'
       this.fillRect(x    , y +  1, 7,  1);
       this.fillRect(x + 5, y +  2, 2,  1);
       this.fillRect(x + 6, y +  3, 1,  1);
@@ -344,7 +350,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  4, 1,  3);
       this.fillRect(x    , y +  9, 4,  1);
       break;
-    case 71:    // "G"
+    case 71:    // 'G'
       this.fillRect(x + 2, y +  1, 4,  1);
       this.fillRect(x + 1, y +  2, 2,  1);
       this.fillRect(x + 5, y +  2, 2,  2);
@@ -354,23 +360,23 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  6, 2,  4);
       this.fillRect(x + 4, y +  6, 1,  1);
       break;
-    case 72:    // "H"
+    case 72:    // 'H'
       this.fillRect(x    , y +  1, 2,  9);
       this.fillRect(x + 2, y +  5, 2,  1);
       this.fillRect(x + 4, y +  1, 2,  9);
       break;
-    case 73:    // "I"
+    case 73:    // 'I'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x + 2, y +  2, 2,  7);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 74:    // "J"
+    case 74:    // 'J'
       this.fillRect(x    , y +  6, 2,  3);
       this.fillRect(x + 1, y +  9, 4,  1);
       this.fillRect(x + 4, y +  2, 2,  7);
       this.fillRect(x + 3, y +  1, 4,  1);
       break;
-    case 75:    // "K"
+    case 75:    // 'K'
       this.fillRect(x    , y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x    , y +  9, 3,  1);
@@ -380,28 +386,28 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  6, 2,  2);
       this.fillRect(x + 5, y +  8, 2,  2);
       break;
-    case 76:    // "L"
+    case 76:    // 'L'
       this.fillRect(x    , y +  1, 4,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x    , y +  9, 7,  1);
       this.fillRect(x + 5, y +  7, 2,  2);
       this.fillRect(x + 6, y +  6, 1,  1);
       break;
-    case 77:    // "M"
+    case 77:    // 'M'
       this.fillRect(x    , y +  1, 2,  9);
       this.fillRect(x + 2, y +  2, 1,  3);
       this.fillRect(x + 3, y +  3, 1,  3);
       this.fillRect(x + 4, y +  2, 1,  3);
       this.fillRect(x + 5, y +  1, 2,  9);
       break;
-    case 78:    // "N"
+    case 78:    // 'N'
       this.fillRect(x    , y +  1, 2,  9);
       this.fillRect(x + 2, y +  3, 1,  3);
       this.fillRect(x + 3, y +  4, 1,  3);
       this.fillRect(x + 4, y +  5, 1,  3);
       this.fillRect(x + 5, y +  1, 2,  9);
       break;
-    case 79:    // "O"
+    case 79:    // 'O'
       this.fillRect(x + 2, y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  1);
       this.fillRect(x + 4, y +  2, 2,  1);
@@ -411,14 +417,14 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  8, 2,  1);
       this.fillRect(x + 2, y +  9, 3,  1);
       break;
-    case 80:    // "P"
+    case 80:    // 'P'
       this.fillRect(x    , y +  1, 6,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 5, y +  2, 2,  3);
       this.fillRect(x + 3, y +  5, 3,  1);
       this.fillRect(x    , y +  9, 4,  1);
       break;
-    case 81:    // "Q"
+    case 81:    // 'Q'
       this.fillRect(x + 2, y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  1);
       this.fillRect(x + 4, y +  2, 2,  1);
@@ -429,7 +435,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  6, 2,  4);
       this.fillRect(x + 3, y + 10, 4,  1);
       break;
-    case 82:    // "R"
+    case 82:    // 'R'
       this.fillRect(x    , y +  1, 6,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 5, y +  2, 2,  3);
@@ -438,7 +444,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  6, 2,  1);
       this.fillRect(x + 5, y +  7, 2,  3);
       break;
-    case 83:    // "S"
+    case 83:    // 'S'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x    , y +  2, 2,  3);
       this.fillRect(x + 4, y +  2, 2,  2);
@@ -448,32 +454,32 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  7, 2,  2);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 84:    // "T"
+    case 84:    // 'T'
       this.fillRect(x    , y +  1, 6,  1);
       this.fillRect(x    , y +  2, 1,  1);
       this.fillRect(x + 5, y +  2, 1,  1);
       this.fillRect(x + 2, y +  2, 2,  7);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 85:    // "U"
+    case 85:    // 'U'
       this.fillRect(x    , y +  1, 2,  8);
       this.fillRect(x + 4, y +  1, 2,  8);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 86:    // "V"
+    case 86:    // 'V'
       this.fillRect(x    , y +  1, 2,  7);
       this.fillRect(x + 4, y +  1, 2,  7);
       this.fillRect(x + 1, y +  8, 4,  1);
       this.fillRect(x + 2, y +  9, 2,  1);
       break;
-    case 87:    // "W"
+    case 87:    // 'W'
       this.fillRect(x    , y +  1, 2,  6);
       this.fillRect(x + 5, y +  1, 2,  6);
       this.fillRect(x + 3, y +  5, 1,  2);
       this.fillRect(x + 1, y +  7, 2,  3);
       this.fillRect(x + 4, y +  7, 2,  3);
       break;
-    case 88:    // "X"
+    case 88:    // 'X'
       this.fillRect(x    , y +  1, 2,  3);
       this.fillRect(x + 4, y +  1, 2,  3);
       this.fillRect(x + 1, y +  4, 4,  1);
@@ -482,14 +488,14 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  7, 2,  3);
       this.fillRect(x + 4, y +  7, 2,  3);
       break;
-    case 89:    // "Y"
+    case 89:    // 'Y'
       this.fillRect(x    , y +  1, 2,  4);
       this.fillRect(x + 4, y +  1, 2,  4);
       this.fillRect(x + 1, y +  5, 4,  1);
       this.fillRect(x + 2, y +  6, 2,  3);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 90:    // "Z"
+    case 90:    // 'Z'
       this.fillRect(x    , y +  3, 1,  1);
       this.fillRect(x    , y +  2, 2,  1);
       this.fillRect(x    , y +  1, 7,  1);
@@ -502,12 +508,12 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  8, 2,  1);
       this.fillRect(x + 6, y +  7, 1,  1);
       break;
-    case 91:    // "["
+    case 91:    // '['
       this.fillRect(x + 2, y +  1, 4,  1);
       this.fillRect(x + 2, y +  2, 2,  7);
       this.fillRect(x + 2, y +  9, 4,  1);
       break;
-    case 92:    // "\"
+    case 92:    // '\'
       this.fillRect(x    , y +  2, 1,  2);
       this.fillRect(x + 1, y +  3, 1,  2);
       this.fillRect(x + 2, y +  4, 1,  2);
@@ -516,12 +522,12 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  7, 1,  2);
       this.fillRect(x + 6, y +  8, 1,  2);
       break;
-    case 93:    // "]"
+    case 93:    // ']'
       this.fillRect(x + 2, y +  1, 4,  1);
       this.fillRect(x + 4, y +  2, 2,  7);
       this.fillRect(x + 2, y +  9, 4,  1);
       break;
-    case 94:    // "^"
+    case 94:    // '^'
       this.fillRect(x    , y +  3, 2,  1);
       this.fillRect(x + 1, y +  2, 2,  1);
       this.fillRect(x + 2, y +  1, 3,  1);
@@ -529,14 +535,14 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  2, 2,  1);
       this.fillRect(x + 5, y +  3, 2,  1);
       break;
-    case 95:    // "_"
+    case 95:    // '_'
       this.fillRect(x    , y + 10, 8,  1);
       break;
-    case 96:    // "`"
+    case 96:    // '`'
       this.fillRect(x + 2, y     , 2,  2);
       this.fillRect(x + 3, y +  2, 2,  1);
       break;
-    case 97:    // "a"
+    case 97:    // 'a'
       this.fillRect(x + 1, y +  4, 4,  1);
       this.fillRect(x + 4, y +  5, 2,  4);
       this.fillRect(x + 1, y +  6, 3,  1);
@@ -544,7 +550,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 1, y +  9, 3,  1);
       this.fillRect(x + 5, y +  9, 2,  1);
       break;
-    case 98:    // "b"
+    case 98:    // 'b'
       this.fillRect(x    , y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 3, y +  4, 3,  1);
@@ -552,14 +558,14 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  9, 2,  1);
       this.fillRect(x + 3, y +  9, 3,  1);
       break;
-    case 99:    // "c"
+    case 99:    // 'c'
       this.fillRect(x + 1, y +  4, 4,  1);
       this.fillRect(x    , y +  5, 2,  4);
       this.fillRect(x + 4, y +  5, 2,  1);
       this.fillRect(x + 4, y +  8, 2,  1);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 100:   // "d"
+    case 100:   // 'd'
       this.fillRect(x + 3, y +  1, 1,  1);
       this.fillRect(x + 4, y +  1, 2,  8);
       this.fillRect(x + 1, y +  4, 3,  1);
@@ -567,7 +573,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 1, y +  9, 3,  1);
       this.fillRect(x + 5, y +  9, 2,  1);
       break;
-    case 101:   // "e"
+    case 101:   // 'e'
       this.fillRect(x + 1, y +  4, 4,  1);
       this.fillRect(x    , y +  5, 2,  4);
       this.fillRect(x + 4, y +  5, 2,  1);
@@ -575,14 +581,14 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  8, 2,  1);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 102:   // "f"
+    case 102:   // 'f'
       this.fillRect(x + 2, y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 4, y +  2, 2,  1);
       this.fillRect(x    , y +  5, 5,  1);
       this.fillRect(x    , y +  9, 4,  1);
       break;
-    case 103:   // "g"
+    case 103:   // 'g'
       this.fillRect(x + 1, y +  4, 3,  1);
       this.fillRect(x + 5, y +  4, 2,  1);
       this.fillRect(x    , y +  5, 2,  3);
@@ -591,7 +597,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y + 10, 2,  1);
       this.fillRect(x + 1, y + 11, 4,  1);
       break;
-    case 104:   // "h"
+    case 104:   // 'h'
       this.fillRect(x    , y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 4, y +  4, 2,  1);
@@ -599,20 +605,20 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  5, 2,  5);
       this.fillRect(x    , y +  9, 3,  1);
       break;
-    case 105:   // "i"
+    case 105:   // 'i'
       this.fillRect(x + 3, y +  1, 2,  2);
       this.fillRect(x + 1, y +  4, 4,  1);
       this.fillRect(x + 3, y +  5, 2,  4);
       this.fillRect(x + 1, y +  9, 6,  1);
       break;
-    case 106:   // "j"
+    case 106:   // 'j'
       this.fillRect(x + 4, y +  1, 2,  2);
       this.fillRect(x + 2, y +  4, 4,  1);
       this.fillRect(x + 4, y +  5, 2,  6);
       this.fillRect(x + 1, y + 11, 4,  1);
       this.fillRect(x    , y +  9, 2,  2);
       break;
-    case 107:   // "k"
+    case 107:   // 'k'
       this.fillRect(x    , y +  1, 3,  1);
       this.fillRect(x + 1, y +  2, 2,  7);
       this.fillRect(x + 5, y +  4, 2,  1);
@@ -622,29 +628,29 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  8, 2,  2);
       this.fillRect(x    , y +  9, 3,  1);
       break;
-    case 108:   // "l"
+    case 108:   // 'l'
       this.fillRect(x + 1, y +  1, 4,  1);
       this.fillRect(x + 3, y +  2, 2,  7);
       this.fillRect(x + 1, y +  9, 6,  1);
       break;
-    case 109:   // "m"
+    case 109:   // 'm'
       this.fillRect(x    , y +  4, 6,  1);
       this.fillRect(x    , y +  5, 2,  5);
       this.fillRect(x + 3, y +  5, 1,  4);
       this.fillRect(x + 5, y +  5, 2,  5);
       break;
-    case 110:   // "n"
+    case 110:   // 'n'
       this.fillRect(x    , y +  4, 5,  1);
       this.fillRect(x    , y +  5, 2,  5);
       this.fillRect(x + 4, y +  5, 2,  5);
       break;
-    case 111:   // "o"
+    case 111:   // 'o'
       this.fillRect(x + 1, y +  4, 4,  1);
       this.fillRect(x    , y +  5, 2,  4);
       this.fillRect(x + 4, y +  5, 2,  4);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 112:   // "p"
+    case 112:   // 'p'
       this.fillRect(x    , y +  4, 2,  1);
       this.fillRect(x + 3, y +  4, 3,  1);
       this.fillRect(x + 1, y +  5, 2,  6);
@@ -652,7 +658,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 3, y +  9, 3,  1);
       this.fillRect(x    , y + 11, 4,  1);
       break;
-    case 113:   // "q"
+    case 113:   // 'q'
       this.fillRect(x + 1, y +  4, 3,  1);
       this.fillRect(x + 5, y +  4, 2,  1);
       this.fillRect(x    , y +  5, 2,  4);
@@ -660,7 +666,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 1, y +  9, 3,  1);
       this.fillRect(x + 3, y + 11, 4,  1);
       break;
-    case 114:   // "r"
+    case 114:   // 'r'
       this.fillRect(x    , y +  4, 3,  1);
       this.fillRect(x + 4, y +  4, 2,  2);
       this.fillRect(x + 1, y +  5, 2,  4);
@@ -668,7 +674,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  5, 2,  2);
       this.fillRect(x    , y +  9, 4,  1);
       break;
-    case 115:   // "s"
+    case 115:   // 's'
       this.fillRect(x + 1, y +  4, 4,  1);
       this.fillRect(x    , y +  5, 2,  1);
       this.fillRect(x + 4, y +  5, 2,  1);
@@ -678,33 +684,33 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 4, y +  8, 2,  1);
       this.fillRect(x + 1, y +  9, 4,  1);
       break;
-    case 116:   // "t"
+    case 116:   // 't'
       this.fillRect(x + 2, y +  2, 1,  1);
       this.fillRect(x + 1, y +  3, 2,  6);
       this.fillRect(x    , y +  4, 6,  1);
       this.fillRect(x + 2, y +  9, 3,  1);
       this.fillRect(x + 4, y +  8, 2,  1);
       break;
-    case 117:   // "u"
+    case 117:   // 'u'
       this.fillRect(x    , y +  4, 2,  5);
       this.fillRect(x + 4, y +  4, 2,  5);
       this.fillRect(x + 1, y +  9, 3,  1);
       this.fillRect(x + 5, y +  9, 2,  1);
       break;
-    case 118:   // "v"
+    case 118:   // 'v'
       this.fillRect(x    , y +  4, 2,  4);
       this.fillRect(x + 4, y +  4, 2,  4);
       this.fillRect(x + 1, y +  8, 4,  1);
       this.fillRect(x + 2, y +  9, 2,  1);
       break;
-    case 119:   // "w"
+    case 119:   // 'w'
       this.fillRect(x    , y +  4, 2,  4);
       this.fillRect(x + 5, y +  4, 2,  4);
       this.fillRect(x + 3, y +  6, 1,  2);
       this.fillRect(x + 1, y +  8, 2,  2);
       this.fillRect(x + 4, y +  8, 2,  2);
       break;
-    case 120:   // "x"
+    case 120:   // 'x'
       this.fillRect(x    , y +  4, 2,  1);
       this.fillRect(x + 5, y +  4, 2,  1);
       this.fillRect(x + 1, y +  5, 2,  1);
@@ -715,7 +721,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x    , y +  9, 2,  1);
       this.fillRect(x + 5, y +  9, 2,  1);
       break;
-    case 121:   // "y"
+    case 121:   // 'y'
       this.fillRect(x + 1, y +  4, 2,  4);
       this.fillRect(x + 5, y +  4, 2,  4);
       this.fillRect(x + 2, y +  8, 4,  1);
@@ -723,7 +729,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 3, y + 10, 2,  1);
       this.fillRect(x    , y + 11, 4,  1);
       break;
-    case 122:   // "z"
+    case 122:   // 'z'
       this.fillRect(x    , y +  4, 6,  1);
       this.fillRect(x    , y +  5, 1,  1);
       this.fillRect(x + 4, y +  5, 2,  1);
@@ -733,7 +739,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 5, y +  8, 1,  1);
       this.fillRect(x    , y +  9, 6,  1);
       break;
-    case 123:   // "{"
+    case 123:   // '{'
       this.fillRect(x + 3, y +  1, 3,  1);
       this.fillRect(x + 2, y +  2, 2,  2);
       this.fillRect(x + 1, y +  4, 2,  1);
@@ -742,11 +748,11 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 2, y +  7, 2,  2);
       this.fillRect(x + 3, y +  9, 3,  1);
       break;
-    case 124:   // "|"
+    case 124:   // '|'
       this.fillRect(x + 3, y +  1, 2,  4);
       this.fillRect(x + 3, y +  6, 2,  4);
       break;
-    case 125:   // "}"
+    case 125:   // '}'
       this.fillRect(x    , y +  1, 3,  1);
       this.fillRect(x + 2, y +  2, 2,  2);
       this.fillRect(x + 3, y +  4, 2,  1);
@@ -755,7 +761,7 @@ CanvasRenderingContext2D.prototype.hermesDraw = function(text, x, y, maxWidth, s
       this.fillRect(x + 2, y +  7, 2,  2);
       this.fillRect(x    , y +  9, 3,  1);
       break;
-    case 126:   // "~"
+    case 126:   // '~'
       this.fillRect(x    , y +  2, 2,  2);
       this.fillRect(x + 1, y +  1, 3,  1);
       this.fillRect(x + 3, y +  2, 2,  1);
