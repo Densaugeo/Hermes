@@ -5,766 +5,170 @@
  */
 
 /**
- * @module CanvasRenderingContext2D
- * 
- * @example var ctx = someCanvasElement.getContext('2d');
- * @example ctx.hermesDraw('x', 100, 200); // Draws an 'x' with its top left corner at 100, 200
- * @example ctx.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
- * @example ctx.hermesDraw('Hello world!', 100, 200, 7); // Draws 'Hello w' starting at 100, 200
- * @example ctx.hermesDraw('Hello world!', 100, 200, 0); // Draws nothing
- * @example ctx.hermesDraw('Hello world!', 100, 200, null); // Draws 'Hello world!' starting at 100, 200
- * @example ctx.hermesDraw('Hello world!', 100, 200, null, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
+ * @module HERMES
  */
+var HERMES = (function() { // Module pattern
+  var exports = {};
+  
+  // @prop Number CHAR_WIDTH -- Width of a char. Is 8
+  var CHAR_WIDTH = exports.CHAR_WIDTH = 8;
+  
+  // @prop Number CHAR_HEIGHT -- Height of a char. Is 12
+  var CHAR_HEIGHT = exports.CHAR_HEIGHT = 12;
+  
+  // @prop Object DRAW_CALLS -- Holds coordinates used in .fillRect() calls for each ascii character
+  var DRAW_CALLS = exports.DRAW_CALLS = {
+    ' ' : [],
+    '!' : [[1,  2, 4,  3], [2,  1, 2,  6], [2,  8, 2,  2]],
+    '"' : [[1,  1, 2,  3], [2,  4, 1,  1], [5,  1, 2,  3], [5,  4, 1,  1]],
+    '#' : [[1,  1, 2,  9], [0,  3, 7,  1], [4,  1, 2,  9], [0,  7, 7,  1]],
+    '$' : [[2,  0, 2,  2], [1,  2, 5,  1], [0,  3, 2,  2], [1,  5, 4,  1], [4,  6, 2,  2], [0,  8, 5,  1], [2,  9, 2,  2]],
+    '%' : [[0,  3, 2,  2], [5,  3, 1,  1], [4,  4, 2,  1], [3,  5, 2,  1], [2,  6, 2,  1], [1,  7, 2,  1], [0,  8, 2,  1], [0,  9, 1,  1], [4,  8, 2,  2]],
+    '&' : [[1,  1, 3,  1], [0,  2, 2,  2], [3,  2, 2,  2], [1,  4, 3,  2], [0,  5, 2,  4], [3,  5, 2,  2], [6,  5, 1,  2], [4,  6, 2,  3], [3,  8, 1,  1], [1,  9, 3,  1], [5,  9, 2,  1]],
+    '\'': [[2,  1, 2,  3], [1,  4, 2,  1]],
+    '(' : [[4,  1, 2,  1], [3,  2, 2,  1], [2,  3, 2,  5], [3,  8, 2,  1], [4,  9, 2,  1]],
+    ')' : [[2,  1, 2,  1], [3,  2, 2,  1], [4,  3, 2,  5], [3,  8, 2,  1], [2,  9, 2,  1]],
+    '*' : [[1,  3, 2,  1], [5,  3, 2,  1], [2,  4, 4,  3], [0,  5, 8,  1], [1,  7, 2,  1], [5,  7, 2,  1]],
+    '+' : [[3,  3, 2,  5], [1,  5, 6,  1]],
+    ',' : [[2,  8, 3,  2], [1,  10, 2,  1]],
+    '-' : [[0,  5, 7,  1]],
+    '.' : [[2,  8, 3,  2]],
+    '/' : [[6,  2, 1,  1], [5,  3, 2,  1], [4,  4, 2,  1], [3,  5, 2,  1], [2,  6, 2,  1], [1,  7, 2,  1], [0,  8, 2,  1], [0,  9, 1,  1]],
+    '0' : [[1,  1, 5,  1], [0,  2, 2,  7], [2,  6, 1,  2], [3,  4, 1,  3], [4,  3, 1,  2], [5,  2, 2,  7], [1,  9, 5,  1]],
+    '1' : [[0,  3, 2,  1], [2,  2, 2,  7], [3,  1, 1,  1], [0,  9, 6,  1]],
+    '2' : [[1,  1, 4,  1], [0,  2, 2,  2], [4,  2, 2,  3], [3,  5, 2,  1], [2,  6, 2,  1], [1,  7, 2,  1], [0,  8, 2,  1], [4,  8, 2,  1], [0,  9, 6,  1]],
+    '3' : [[1,  1, 4,  1], [0,  2, 2,  1], [4,  2, 2,  3], [2,  5, 3,  1], [4,  6, 2,  3], [0,  8, 2,  1], [1,  9, 4,  1]],
+    '4' : [[4,  1, 2,  8], [3,  2, 1,  1], [2,  3, 2,  1], [1,  4, 2,  1], [0,  5, 2,  1], [0,  6, 7,  1], [3,  9, 4,  1]],
+    '5' : [[0,  1, 6,  1], [0,  2, 2,  3], [0,  5, 5,  1], [4,  6, 2,  3], [0,  8, 2,  1], [1,  9, 4,  1]],
+    '6' : [[2,  1, 3,  1], [1,  2, 2,  1], [0,  3, 2,  6], [2,  5, 3,  1], [4,  6, 2,  3], [1,  9, 4,  1]],
+    '7' : [[0,  1, 7,  1], [0,  2, 2,  2], [5,  2, 2,  3], [4,  5, 2,  1], [3,  6, 2,  1], [2,  7, 2,  3]],
+    '8' : [[1,  1, 4,  1], [0,  2, 2,  3], [4,  2, 2,  3], [2,  4, 1,  1], [1,  5, 4,  1], [3,  6, 1,  1], [0,  6, 2,  3], [4,  6, 2,  3], [1,  9, 4,  1]],
+    '9' : [[1,  1, 4,  1], [0,  2, 2,  3], [4,  2, 2,  3], [1,  5, 4,  1], [3,  6, 2,  2], [2,  8, 2,  1], [1,  9, 3,  1]],
+    '9' : [[1,  1, 4,  1]],
+    ':' : [[2,  3, 3,  2], [2,  7, 3,  2]],
+    ';' : [[2,  3, 3,  2], [2,  7, 3,  2], [3,  9, 2,  1], [2, 10, 2,  1]],
+    '<' : [[4,  1, 2,  1], [3,  2, 2,  1], [2,  3, 2,  1], [1,  4, 2,  1], [0,  5, 2,  1], [1,  6, 2,  1], [2,  7, 2,  1], [3,  8, 2,  1], [4,  9, 2,  1]],
+    '=' : [[1,  4, 6,  1], [1,  6, 6,  1]],
+    '>' : [[1,  1, 2,  1], [2,  2, 2,  1], [3,  3, 2,  1], [4,  4, 2,  1], [5,  5, 2,  1], [4,  6, 2,  1], [3,  7, 2,  1], [2,  8, 2,  1], [1,  9, 2,  1]],
+    '?' : [[1,  1, 4,  1], [0,  2, 2,  1], [4,  2, 2,  2], [3,  4, 2,  1], [2,  5, 2,  2], [2,  8, 2,  2]],
+    '@' : [[1,  1, 5,  1], [0,  2, 2,  7], [5,  2, 2,  2], [3,  4, 4,  3], [1,  9, 5,  1]],
+    'A' : [[2,  1, 2,  1], [1,  2, 4,  1], [0,  3, 2,  7], [4,  3, 2,  7], [2,  6, 2,  1]],
+    'B' : [[0,  1, 6,  1], [1,  2, 2,  7], [5,  2, 2,  3], [3,  5, 3,  1], [5,  6, 2,  3], [0,  9, 6,  1]],
+    'C' : [[2,  1, 4,  1], [1,  2, 2,  1], [5,  2, 2,  2], [0,  3, 2,  5], [5,  7, 2,  2], [1,  8, 2,  1], [2,  9, 4,  1]],
+    'D' : [[0,  1, 5,  1], [1,  2, 2,  7], [4,  2, 2,  1], [5,  3, 2,  5], [4,  8, 2,  1], [0,  9, 5,  1]],
+    'E' : [[0,  1, 7,  1], [6,  2, 1,  1], [1,  2, 2,  7], [3,  5, 2,  1], [5,  4, 1,  3], [6,  8, 1,  1], [0,  9, 7,  1]],
+    'F' : [[0,  1, 7,  1], [5,  2, 2,  1], [6,  3, 1,  1], [1,  2, 2,  7], [3,  5, 2,  1], [5,  4, 1,  3], [0,  9, 4,  1]],
+    'G' : [[2,  1, 4,  1], [1,  2, 2,  1], [5,  2, 2,  2], [0,  3, 2,  5], [1,  8, 2,  1], [2,  9, 3,  1], [5,  6, 2,  4], [4,  6, 1,  1]],
+    'H' : [[0,  1, 2,  9], [2,  5, 2,  1], [4,  1, 2,  9]],
+    'I' : [[1,  1, 4,  1], [2,  2, 2,  7], [1,  9, 4,  1]],
+    'J' : [[0,  6, 2,  3], [1,  9, 4,  1], [4,  2, 2,  7], [3,  1, 4,  1]],
+    'K' : [[0,  1, 3,  1], [1,  2, 2,  7], [0,  9, 3,  1], [5,  1, 2,  2], [4,  3, 2,  2], [3,  5, 2,  1], [4,  6, 2,  2], [5,  8, 2,  2]],
+    'L' : [[0,  1, 4,  1], [1,  2, 2,  7], [0,  9, 7,  1], [5,  7, 2,  2], [6,  6, 1,  1]],
+    'M' : [[0,  1, 2,  9], [2,  2, 1,  3], [3,  3, 1,  3], [4,  2, 1,  3], [5,  1, 2,  9]],
+    'N' : [[0,  1, 2,  9], [2,  3, 1,  3], [3,  4, 1,  3], [4,  5, 1,  3], [5,  1, 2,  9]],
+    'O' : [[2,  1, 3,  1], [1,  2, 2,  1], [4,  2, 2,  1], [0,  3, 2,  5], [5,  3, 2,  5], [1,  8, 2,  1], [4,  8, 2,  1], [2,  9, 3,  1]],
+    'P' : [[0,  1, 6,  1], [1,  2, 2,  7], [5,  2, 2,  3], [3,  5, 3,  1], [0,  9, 4,  1]],
+    'Q' : [[2,  1, 3,  1], [1,  2, 2,  1], [4,  2, 2,  1], [0,  3, 2,  5], [5,  3, 2,  5], [1,  8, 3,  1], [3,  7, 1,  1], [4,  6, 2,  4], [3, 10, 4,  1]],
+    'R' : [[0,  1, 6,  1], [1,  2, 2,  7], [5,  2, 2,  3], [3,  5, 3,  1], [0,  9, 3,  1], [4,  6, 2,  1], [5,  7, 2,  3]],
+    'S' : [[1,  1, 4,  1], [0,  2, 2,  3], [4,  2, 2,  2], [1,  5, 3,  1], [3,  6, 2,  1], [0,  7, 2,  2], [4,  7, 2,  2], [1,  9, 4,  1]],
+    'T' : [[0,  1, 6,  1], [0,  2, 1,  1], [5,  2, 1,  1], [2,  2, 2,  7], [1,  9, 4,  1]],
+    'U' : [[0,  1, 2,  8], [4,  1, 2,  8], [1,  9, 4,  1]],
+    'V' : [[0,  1, 2,  7], [4,  1, 2,  7], [1,  8, 4,  1], [2,  9, 2,  1]],
+    'W' : [[0,  1, 2,  6], [5,  1, 2,  6], [3,  5, 1,  2], [1,  7, 2,  3], [4,  7, 2,  3]],
+    'X' : [[0,  1, 2,  3], [4,  1, 2,  3], [1,  4, 4,  1], [2,  5, 2,  1], [1,  6, 4,  1], [0,  7, 2,  3], [4,  7, 2,  3]],
+    'Y' : [[0,  1, 2,  4], [4,  1, 2,  4], [1,  5, 4,  1], [2,  6, 2,  3], [1,  9, 4,  1]],
+    'Z' : [[0,  3, 1,  1], [0,  2, 2,  1], [0,  1, 7,  1], [4,  2, 3,  1], [3,  3, 2,  2], [2,  5, 2,  1], [1,  6, 2,  2], [0,  8, 2,  1], [0,  9, 7,  1], [5,  8, 2,  1], [6,  7, 1,  1]],
+    '[' : [[2,  1, 4,  1], [2,  2, 2,  7], [2,  9, 4,  1]],
+    '\\': [[0,  2, 1,  2], [1,  3, 1,  2], [2,  4, 1,  2], [3,  5, 1,  2], [4,  6, 1,  2], [5,  7, 1,  2], [6,  8, 1,  2]],
+    ']' : [[2,  1, 4,  1], [4,  2, 2,  7], [2,  9, 4,  1]],
+    '^' : [[0,  3, 2,  1], [1,  2, 2,  1], [2,  1, 3,  1], [3,  0, 1,  1], [4,  2, 2,  1], [5,  3, 2,  1]],
+    '_' : [[0, 10, 8,  1]],
+    '`' : [[2,  0, 2,  2], [3,  2, 2,  1]],
+    'a' : [[1,  4, 4,  1], [4,  5, 2,  4], [1,  6, 3,  1], [0,  7, 2,  2], [1,  9, 3,  1], [5,  9, 2,  1]],
+    'b' : [[0,  1, 3,  1], [1,  2, 2,  7], [3,  4, 3,  1], [5,  5, 2,  4], [0,  9, 2,  1], [3,  9, 3,  1]],
+    'c' : [[1,  4, 4,  1], [0,  5, 2,  4], [4,  5, 2,  1], [4,  8, 2,  1], [1,  9, 4,  1]],
+    'd' : [[3,  1, 1,  1], [4,  1, 2,  8], [1,  4, 3,  1], [0,  5, 2,  4], [1,  9, 3,  1], [5,  9, 2,  1]],
+    'e' : [[1,  4, 4,  1], [0,  5, 2,  4], [4,  5, 2,  1], [2,  6, 4,  1], [4,  8, 2,  1], [1,  9, 4,  1]],
+    'f' : [[2,  1, 3,  1], [1,  2, 2,  7], [4,  2, 2,  1], [0,  5, 5,  1], [0,  9, 4,  1]],
+    'g' : [[1,  4, 3,  1], [5,  4, 2,  1], [0,  5, 2,  3], [4,  5, 2,  6], [1,  8, 3,  1], [0, 10, 2,  1], [1, 11, 4,  1]],
+    'h' : [[0,  1, 3,  1], [1,  2, 2,  7], [4,  4, 2,  1], [3,  5, 1,  1], [5,  5, 2,  5], [0,  9, 3,  1]],
+    'i' : [[3,  1, 2,  2], [1,  4, 4,  1], [3,  5, 2,  4], [1,  9, 6,  1]],
+    'j' : [[4,  1, 2,  2], [2,  4, 4,  1], [4,  5, 2,  6], [1, 11, 4,  1], [0,  9, 2,  2]],
+    'k' : [[0,  1, 3,  1], [1,  2, 2,  7], [5,  4, 2,  1], [4,  5, 2,  1], [3,  6, 2,  1], [4,  7, 2,  1], [5,  8, 2,  2], [0,  9, 3,  1]],
+    'l' : [[1,  1, 4,  1], [3,  2, 2,  7], [1,  9, 6,  1]],
+    'm' : [[0,  4, 6,  1], [0,  5, 2,  5], [3,  5, 1,  4], [5,  5, 2,  5]],
+    'n' : [[0,  4, 5,  1], [0,  5, 2,  5], [4,  5, 2,  5]],
+    'o' : [[1,  4, 4,  1], [0,  5, 2,  4], [4,  5, 2,  4], [1,  9, 4,  1]],
+    'p' : [[0,  4, 2,  1], [3,  4, 3,  1], [1,  5, 2,  6], [5,  5, 2,  4], [3,  9, 3,  1], [0, 11, 4,  1]],
+    'q' : [[1,  4, 3,  1], [5,  4, 2,  1], [0,  5, 2,  4], [4,  5, 2,  6], [1,  9, 3,  1], [3, 11, 4,  1]],
+    'r' : [[0,  4, 3,  1], [4,  4, 2,  2], [1,  5, 2,  4], [3,  6, 1,  1], [5,  5, 2,  2], [0,  9, 4,  1]],
+    's' : [[1,  4, 4,  1], [0,  5, 2,  1], [4,  5, 2,  1], [1,  6, 2,  1], [3,  7, 2,  1], [0,  8, 2,  1], [4,  8, 2,  1], [1,  9, 4,  1]],
+    't' : [[2,  2, 1,  1], [1,  3, 2,  6], [0,  4, 6,  1], [2,  9, 3,  1], [4,  8, 2,  1]],
+    'u' : [[0,  4, 2,  5], [4,  4, 2,  5], [1,  9, 3,  1], [5,  9, 2,  1]],
+    'v' : [[0,  4, 2,  4], [4,  4, 2,  4], [1,  8, 4,  1], [2,  9, 2,  1]],
+    'w' : [[0,  4, 2,  4], [5,  4, 2,  4], [3,  6, 1,  2], [1,  8, 2,  2], [4,  8, 2,  2]],
+    'x' : [[0,  4, 2,  1], [5,  4, 2,  1], [1,  5, 2,  1], [4,  5, 2,  1], [2,  6, 3,  2], [1,  8, 2,  1], [4,  8, 2,  1], [0,  9, 2,  1], [5,  9, 2,  1]],
+    'y' : [[1,  4, 2,  4], [5,  4, 2,  4], [2,  8, 4,  1], [4,  9, 2,  1], [3, 10, 2,  1], [0, 11, 4,  1]],
+    'z' : [[0,  4, 6,  1], [0,  5, 1,  1], [4,  5, 2,  1], [3,  6, 2,  1], [1,  7, 2,  1], [0,  8, 2,  1], [5,  8, 1,  1], [0,  9, 6,  1]],
+    '{' : [[3,  1, 3,  1], [2,  2, 2,  2], [1,  4, 2,  1], [0,  5, 2,  1], [1,  6, 2,  1], [2,  7, 2,  2], [3,  9, 3,  1]],
+    '|' : [[3,  1, 2,  4], [3,  6, 2,  4]],
+    '}' : [[0,  1, 3,  1], [2,  2, 2,  2], [3,  4, 2,  1], [4,  5, 2,  1], [3,  6, 2,  1], [2,  7, 2,  2], [0,  9, 3,  1]],
+    '~' : [[0,  2, 2,  2], [1,  1, 3,  1], [3,  2, 2,  1], [4,  3, 3,  1], [6,  2, 1,  1], [6,  1, 2,  1]],
+  };
+  
+  /**
+   * @module CanvasRenderingContext2D
+   * 
+   * @example var ctx = someCanvasElement.getContext('2d');
+   * @example ctx.hermesDraw('x', 100, 200); // Draws an 'x' with its top left corner at 100, 200
+   * @example ctx.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
+   * @example ctx.hermesDraw('Hello world!', 100, 200, 7); // Draws 'Hello w' starting at 100, 200
+   * @example ctx.hermesDraw('Hello world!', 100, 200, 0); // Draws nothing
+   * @example ctx.hermesDraw('Hello world!', 100, 200, null); // Draws 'Hello world!' starting at 100, 200
+   * @example ctx.hermesDraw('Hello world!', 100, 200, null, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
+   */
+  
+  // @method proto undefined hermesDraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font
+  CanvasRenderingContext2D.prototype.hermesDraw = function hermesDraw(text, x, y, maxWidth, style) {
+    text = String(text) || ' ';
+    x = Number(x) || 0;
+    y = Number(y) || 0;
+    
+    // If null, undefined, maxWidth defaults to width of text (i.e. no effect)
+    if(maxWidth === undefined || maxWidth === null) {
+      maxWidth = text.length;
+    }
+    maxWidth = Number(maxWidth) || 0;
+    
+    if(text.length <= 0 || maxWidth <= 0) {
+      return;
+    }
+    
+    if(style) {
+      this.fillStyle = style;
+    }
+    
+    if(DRAW_CALLS[text[0]]) {
+      DRAW_CALLS[text[0]].forEach(function(v) {
+        this.fillRect(x + v[0], y + v[1], v[2], v[3]);
+      }, this);
+    }
+    
+    --maxWidth;
+    text = text.substring(1);
+    x += 8;
+    this.hermesDraw(text, x, y, maxWidth);
+  }
+  
+  // @method proto undefined hermesRedraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font, clearing the area underneath
+  CanvasRenderingContext2D.prototype.hermesRedraw = function hermesRedraw(text, x, y, maxWidth, style) {
+    this.clearRect(x, y, 8*(maxWidth || text.length), 12);
+    this.hermesDraw(text, x, y, maxWidth, style);
+  }
+  
+  return exports;
+})(); // Module pattern
 
-// @method proto undefined hermesDraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font
-CanvasRenderingContext2D.prototype.hermesDraw = function hermesDraw(text, x, y, maxWidth, style) {
-  text = String(text) || ' ';
-  x = Number(x) || 0;
-  y = Number(y) || 0;
-  
-  // If null, undefined, maxWidth defaults to width of text (i.e. no effect)
-  if(maxWidth === undefined || maxWidth === null) {
-    maxWidth = text.length;
-  }
-  maxWidth = Number(maxWidth) || 0;
-  
-  if(text.length <= 0 || maxWidth <= 0) {
-    return;
-  }
-  
-  if(style) {
-    this.fillStyle = style;
-  }
-  
-  switch(text.charCodeAt(0)) {
-    case 32:    // ' '
-      break;
-    case 33:    // '!'
-      this.fillRect(x + 1, y +  2, 4,  3);
-      this.fillRect(x + 2, y +  1, 2,  6);
-      this.fillRect(x + 2, y +  8, 2,  2);
-      break;
-    case 34:    // '"'
-      this.fillRect(x + 1, y +  1, 2,  3);
-      this.fillRect(x + 2, y +  4, 1,  1);
-      this.fillRect(x + 5, y +  1, 2,  3);
-      this.fillRect(x + 5, y +  4, 1,  1);
-      break;
-    case 35:    // '#'
-      this.fillRect(x + 1, y +  1, 2,  9);
-      this.fillRect(x    , y +  3, 7,  1);
-      this.fillRect(x + 4, y +  1, 2,  9);
-      this.fillRect(x    , y +  7, 7,  1);
-      break;
-    case 36:    // '$'
-      this.fillRect(x + 2, y     , 2,  2);
-      this.fillRect(x + 1, y +  2, 5,  1);
-      this.fillRect(x    , y +  3, 2,  2);
-      this.fillRect(x + 1, y +  5, 4,  1);
-      this.fillRect(x + 4, y +  6, 2,  2);
-      this.fillRect(x    , y +  8, 5,  1);
-      this.fillRect(x + 2, y +  9, 2,  2);
-      break;
-    case 37:    // '%'
-      this.fillRect(x    , y +  3, 2,  2);
-      this.fillRect(x + 5, y +  3, 1,  1);
-      this.fillRect(x + 4, y +  4, 2,  1);
-      this.fillRect(x + 3, y +  5, 2,  1);
-      this.fillRect(x + 2, y +  6, 2,  1);
-      this.fillRect(x + 1, y +  7, 2,  1);
-      this.fillRect(x    , y +  8, 2,  1);
-      this.fillRect(x    , y +  9, 1,  1);
-      this.fillRect(x + 4, y +  8, 2,  2);
-      break;
-    case 38:    // '&'
-      this.fillRect(x + 1, y +  1, 3,  1);
-      this.fillRect(x    , y +  2, 2,  2);
-      this.fillRect(x + 3, y +  2, 2,  2);
-      this.fillRect(x + 1, y +  4, 3,  2);
-      this.fillRect(x    , y +  5, 2,  4);
-      this.fillRect(x + 3, y +  5, 2,  2);
-      this.fillRect(x + 6, y +  5, 1,  2);
-      this.fillRect(x + 4, y +  6, 2,  3);
-      this.fillRect(x + 3, y +  8, 1,  1);
-      this.fillRect(x + 1, y +  9, 3,  1);
-      this.fillRect(x + 5, y +  9, 2,  1);
-      break;
-    case 39:    // '''
-      this.fillRect(x + 2, y +  1, 2,  3);
-      this.fillRect(x + 1, y +  4, 2,  1);
-      break;
-    case 40:    // '('
-      this.fillRect(x + 4, y +  1, 2,  1);
-      this.fillRect(x + 3, y +  2, 2,  1);
-      this.fillRect(x + 2, y +  3, 2,  5);
-      this.fillRect(x + 3, y +  8, 2,  1);
-      this.fillRect(x + 4, y +  9, 2,  1);
-      break;
-    case 41:    // ')'
-      this.fillRect(x + 2, y +  1, 2,  1);
-      this.fillRect(x + 3, y +  2, 2,  1);
-      this.fillRect(x + 4, y +  3, 2,  5);
-      this.fillRect(x + 3, y +  8, 2,  1);
-      this.fillRect(x + 2, y +  9, 2,  1);
-      break;
-    case 42:    // '*'
-      this.fillRect(x + 1, y +  3, 2,  1);
-      this.fillRect(x + 5, y +  3, 2,  1);
-      this.fillRect(x + 2, y +  4, 4,  3);
-      this.fillRect(x    , y +  5, 8,  1);
-      this.fillRect(x + 1, y +  7, 2,  1);
-      this.fillRect(x + 5, y +  7, 2,  1);
-      break;
-    case 43:    // '+'
-      this.fillRect(x + 3, y +  3, 2,  5);
-      this.fillRect(x + 1, y +  5, 6,  1);
-      break;
-    case 44:    // ','
-      this.fillRect(x + 2, y +  8, 3,  2);
-      this.fillRect(x + 1, y +  10, 2,  1);
-      break;
-    case 45:    // '-'
-      this.fillRect(x    , y +  5, 7,  1);
-      break;
-    case 46:    // '.'
-      this.fillRect(x + 2, y +  8, 3,  2);
-      break;
-    case 47:    // '/'
-      this.fillRect(x + 6, y +  2, 1,  1);
-      this.fillRect(x + 5, y +  3, 2,  1);
-      this.fillRect(x + 4, y +  4, 2,  1);
-      this.fillRect(x + 3, y +  5, 2,  1);
-      this.fillRect(x + 2, y +  6, 2,  1);
-      this.fillRect(x + 1, y +  7, 2,  1);
-      this.fillRect(x    , y +  8, 2,  1);
-      this.fillRect(x    , y +  9, 1,  1);
-      break;
-    case 48:    // '0'
-      this.fillRect(x + 1, y +  1, 5,  1);
-      this.fillRect(x    , y +  2, 2,  7);
-      this.fillRect(x + 2, y +  6, 1,  2);
-      this.fillRect(x + 3, y +  4, 1,  3);
-      this.fillRect(x + 4, y +  3, 1,  2);
-      this.fillRect(x + 5, y +  2, 2,  7);
-      this.fillRect(x + 1, y +  9, 5,  1);
-      break;
-    case 49:    // '1'
-      this.fillRect(x    , y +  3, 2,  1);
-      this.fillRect(x + 2, y +  2, 2,  7);
-      this.fillRect(x + 3, y +  1, 1,  1);
-      this.fillRect(x    , y +  9, 6,  1);
-      break;
-    case 50:    // '2'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x    , y +  2, 2,  2);
-      this.fillRect(x + 4, y +  2, 2,  3);
-      this.fillRect(x + 3, y +  5, 2,  1);
-      this.fillRect(x + 2, y +  6, 2,  1);
-      this.fillRect(x + 1, y +  7, 2,  1);
-      this.fillRect(x + 0, y +  8, 2,  1);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      this.fillRect(x    , y +  9, 6,  1);
-      break;
-    case 51:    // '3'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x    , y +  2, 2,  1);
-      this.fillRect(x + 4, y +  2, 2,  3);
-      this.fillRect(x + 2, y +  5, 3,  1);
-      this.fillRect(x + 4, y +  6, 2,  3);
-      this.fillRect(x    , y +  8, 2,  1);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 52:    // '4'
-      this.fillRect(x + 4, y +  1, 2,  8);
-      this.fillRect(x + 3, y +  2, 1,  1);
-      this.fillRect(x + 2, y +  3, 2,  1);
-      this.fillRect(x + 1, y +  4, 2,  1);
-      this.fillRect(x    , y +  5, 2,  1);
-      this.fillRect(x    , y +  6, 7,  1);
-      this.fillRect(x + 3, y +  9, 4,  1);
-      break;
-    case 53:    // '5'
-      this.fillRect(x    , y +  1, 6,  1);
-      this.fillRect(x    , y +  2, 2,  3);
-      this.fillRect(x    , y +  5, 5,  1);
-      this.fillRect(x + 4, y +  6, 2,  3);
-      this.fillRect(x    , y +  8, 2,  1);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 54:    // '6'
-      this.fillRect(x + 2, y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  1);
-      this.fillRect(x    , y +  3, 2,  6);
-      this.fillRect(x + 2, y +  5, 3,  1);
-      this.fillRect(x + 4, y +  6, 2,  3);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 55:    // '7'
-      this.fillRect(x    , y +  1, 7,  1);
-      this.fillRect(x    , y +  2, 2,  2);
-      this.fillRect(x + 5, y +  2, 2,  3);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 3, y +  6, 2,  1);
-      this.fillRect(x + 2, y +  7, 2,  3);
-      break;
-    case 56:    // '8'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x    , y +  2, 2,  3);
-      this.fillRect(x + 4, y +  2, 2,  3);
-      this.fillRect(x + 2, y +  4, 1,  1);
-      this.fillRect(x + 1, y +  5, 4,  1);
-      this.fillRect(x + 3, y +  6, 1,  1);
-      this.fillRect(x    , y +  6, 2,  3);
-      this.fillRect(x + 4, y +  6, 2,  3);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 57:    // '9'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x    , y +  2, 2,  3);
-      this.fillRect(x + 4, y +  2, 2,  3);
-      this.fillRect(x + 1, y +  5, 4,  1);
-      this.fillRect(x + 3, y +  6, 2,  2);
-      this.fillRect(x + 2, y +  8, 2,  1);
-      this.fillRect(x + 1, y +  9, 3,  1);
-      break;
-    case 57:    // '9'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      break;
-    case 58:    // ':'
-      this.fillRect(x + 2, y +  3, 3,  2);
-      this.fillRect(x + 2, y +  7, 3,  2);
-      break;
-    case 59:    // ';'
-      this.fillRect(x + 2, y +  3, 3,  2);
-      this.fillRect(x + 2, y +  7, 3,  2);
-      this.fillRect(x + 3, y +  9, 2,  1);
-      this.fillRect(x + 2, y + 10, 2,  1);
-      break;
-    case 60:    // '<'
-      this.fillRect(x + 4, y +  1, 2,  1);
-      this.fillRect(x + 3, y +  2, 2,  1);
-      this.fillRect(x + 2, y +  3, 2,  1);
-      this.fillRect(x + 1, y +  4, 2,  1);
-      this.fillRect(x    , y +  5, 2,  1);
-      this.fillRect(x + 1, y +  6, 2,  1);
-      this.fillRect(x + 2, y +  7, 2,  1);
-      this.fillRect(x + 3, y +  8, 2,  1);
-      this.fillRect(x + 4, y +  9, 2,  1);
-      break;
-    case 61:    // '='
-      this.fillRect(x + 1, y +  4, 6,  1);
-      this.fillRect(x + 1, y +  6, 6,  1);
-      break;
-    case 62:    // '>'
-      this.fillRect(x + 1, y +  1, 2,  1);
-      this.fillRect(x + 2, y +  2, 2,  1);
-      this.fillRect(x + 3, y +  3, 2,  1);
-      this.fillRect(x + 4, y +  4, 2,  1);
-      this.fillRect(x + 5, y +  5, 2,  1);
-      this.fillRect(x + 4, y +  6, 2,  1);
-      this.fillRect(x + 3, y +  7, 2,  1);
-      this.fillRect(x + 2, y +  8, 2,  1);
-      this.fillRect(x + 1, y +  9, 2,  1);
-      break;
-    case 63:    // '?'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x    , y +  2, 2,  1);
-      this.fillRect(x + 4, y +  2, 2,  2);
-      this.fillRect(x + 3, y +  4, 2,  1);
-      this.fillRect(x + 2, y +  5, 2,  2);
-      this.fillRect(x + 2, y +  8, 2,  2);
-      break;
-    case 64:    // '@'
-      this.fillRect(x + 1, y +  1, 5,  1);
-      this.fillRect(x    , y +  2, 2,  7);
-      this.fillRect(x + 5, y +  2, 2,  2);
-      this.fillRect(x + 3, y +  4, 4,  3);
-      this.fillRect(x + 1, y +  9, 5,  1);
-      break;
-    case 65:    // 'A'
-      this.fillRect(x + 2, y +  1, 2,  1);
-      this.fillRect(x + 1, y +  2, 4,  1);
-      this.fillRect(x    , y +  3, 2,  7);
-      this.fillRect(x + 4, y +  3, 2,  7);
-      this.fillRect(x + 2, y +  6, 2,  1);
-      break;
-    case 66:    // 'B'
-      this.fillRect(x    , y +  1, 6,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 5, y +  2, 2,  3);
-      this.fillRect(x + 3, y +  5, 3,  1);
-      this.fillRect(x + 5, y +  6, 2,  3);
-      this.fillRect(x    , y +  9, 6,  1);
-      break;
-    case 67:    // 'C'
-      this.fillRect(x + 2, y +  1, 4,  1);
-      this.fillRect(x + 1, y +  2, 2,  1);
-      this.fillRect(x + 5, y +  2, 2,  2);
-      this.fillRect(x    , y +  3, 2,  5);
-      this.fillRect(x + 5, y +  7, 2,  2);
-      this.fillRect(x + 1, y +  8, 2,  1);
-      this.fillRect(x + 2, y +  9, 4,  1);
-      break;
-    case 68:    // 'D'
-      this.fillRect(x    , y +  1, 5,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 4, y +  2, 2,  1);
-      this.fillRect(x + 5, y +  3, 2,  5);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      this.fillRect(x    , y +  9, 5,  1);
-      break;
-    case 69:    // 'E'
-      this.fillRect(x    , y +  1, 7,  1);
-      this.fillRect(x + 6, y +  2, 1,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 3, y +  5, 2,  1);
-      this.fillRect(x + 5, y +  4, 1,  3);
-      this.fillRect(x + 6, y +  8, 1,  1);
-      this.fillRect(x    , y +  9, 7,  1);
-      break;
-    case 70:    // 'F'
-      this.fillRect(x    , y +  1, 7,  1);
-      this.fillRect(x + 5, y +  2, 2,  1);
-      this.fillRect(x + 6, y +  3, 1,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 3, y +  5, 2,  1);
-      this.fillRect(x + 5, y +  4, 1,  3);
-      this.fillRect(x    , y +  9, 4,  1);
-      break;
-    case 71:    // 'G'
-      this.fillRect(x + 2, y +  1, 4,  1);
-      this.fillRect(x + 1, y +  2, 2,  1);
-      this.fillRect(x + 5, y +  2, 2,  2);
-      this.fillRect(x    , y +  3, 2,  5);
-      this.fillRect(x + 1, y +  8, 2,  1);
-      this.fillRect(x + 2, y +  9, 3,  1);
-      this.fillRect(x + 5, y +  6, 2,  4);
-      this.fillRect(x + 4, y +  6, 1,  1);
-      break;
-    case 72:    // 'H'
-      this.fillRect(x    , y +  1, 2,  9);
-      this.fillRect(x + 2, y +  5, 2,  1);
-      this.fillRect(x + 4, y +  1, 2,  9);
-      break;
-    case 73:    // 'I'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x + 2, y +  2, 2,  7);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 74:    // 'J'
-      this.fillRect(x    , y +  6, 2,  3);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      this.fillRect(x + 4, y +  2, 2,  7);
-      this.fillRect(x + 3, y +  1, 4,  1);
-      break;
-    case 75:    // 'K'
-      this.fillRect(x    , y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x    , y +  9, 3,  1);
-      this.fillRect(x + 5, y +  1, 2,  2);
-      this.fillRect(x + 4, y +  3, 2,  2);
-      this.fillRect(x + 3, y +  5, 2,  1);
-      this.fillRect(x + 4, y +  6, 2,  2);
-      this.fillRect(x + 5, y +  8, 2,  2);
-      break;
-    case 76:    // 'L'
-      this.fillRect(x    , y +  1, 4,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x    , y +  9, 7,  1);
-      this.fillRect(x + 5, y +  7, 2,  2);
-      this.fillRect(x + 6, y +  6, 1,  1);
-      break;
-    case 77:    // 'M'
-      this.fillRect(x    , y +  1, 2,  9);
-      this.fillRect(x + 2, y +  2, 1,  3);
-      this.fillRect(x + 3, y +  3, 1,  3);
-      this.fillRect(x + 4, y +  2, 1,  3);
-      this.fillRect(x + 5, y +  1, 2,  9);
-      break;
-    case 78:    // 'N'
-      this.fillRect(x    , y +  1, 2,  9);
-      this.fillRect(x + 2, y +  3, 1,  3);
-      this.fillRect(x + 3, y +  4, 1,  3);
-      this.fillRect(x + 4, y +  5, 1,  3);
-      this.fillRect(x + 5, y +  1, 2,  9);
-      break;
-    case 79:    // 'O'
-      this.fillRect(x + 2, y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  1);
-      this.fillRect(x + 4, y +  2, 2,  1);
-      this.fillRect(x    , y +  3, 2,  5);
-      this.fillRect(x + 5, y +  3, 2,  5);
-      this.fillRect(x + 1, y +  8, 2,  1);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      this.fillRect(x + 2, y +  9, 3,  1);
-      break;
-    case 80:    // 'P'
-      this.fillRect(x    , y +  1, 6,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 5, y +  2, 2,  3);
-      this.fillRect(x + 3, y +  5, 3,  1);
-      this.fillRect(x    , y +  9, 4,  1);
-      break;
-    case 81:    // 'Q'
-      this.fillRect(x + 2, y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  1);
-      this.fillRect(x + 4, y +  2, 2,  1);
-      this.fillRect(x    , y +  3, 2,  5);
-      this.fillRect(x + 5, y +  3, 2,  5);
-      this.fillRect(x + 1, y +  8, 3,  1);
-      this.fillRect(x + 3, y +  7, 1,  1);
-      this.fillRect(x + 4, y +  6, 2,  4);
-      this.fillRect(x + 3, y + 10, 4,  1);
-      break;
-    case 82:    // 'R'
-      this.fillRect(x    , y +  1, 6,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 5, y +  2, 2,  3);
-      this.fillRect(x + 3, y +  5, 3,  1);
-      this.fillRect(x    , y +  9, 3,  1);
-      this.fillRect(x + 4, y +  6, 2,  1);
-      this.fillRect(x + 5, y +  7, 2,  3);
-      break;
-    case 83:    // 'S'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x    , y +  2, 2,  3);
-      this.fillRect(x + 4, y +  2, 2,  2);
-      this.fillRect(x + 1, y +  5, 3,  1);
-      this.fillRect(x + 3, y +  6, 2,  1);
-      this.fillRect(x    , y +  7, 2,  2);
-      this.fillRect(x + 4, y +  7, 2,  2);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 84:    // 'T'
-      this.fillRect(x    , y +  1, 6,  1);
-      this.fillRect(x    , y +  2, 1,  1);
-      this.fillRect(x + 5, y +  2, 1,  1);
-      this.fillRect(x + 2, y +  2, 2,  7);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 85:    // 'U'
-      this.fillRect(x    , y +  1, 2,  8);
-      this.fillRect(x + 4, y +  1, 2,  8);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 86:    // 'V'
-      this.fillRect(x    , y +  1, 2,  7);
-      this.fillRect(x + 4, y +  1, 2,  7);
-      this.fillRect(x + 1, y +  8, 4,  1);
-      this.fillRect(x + 2, y +  9, 2,  1);
-      break;
-    case 87:    // 'W'
-      this.fillRect(x    , y +  1, 2,  6);
-      this.fillRect(x + 5, y +  1, 2,  6);
-      this.fillRect(x + 3, y +  5, 1,  2);
-      this.fillRect(x + 1, y +  7, 2,  3);
-      this.fillRect(x + 4, y +  7, 2,  3);
-      break;
-    case 88:    // 'X'
-      this.fillRect(x    , y +  1, 2,  3);
-      this.fillRect(x + 4, y +  1, 2,  3);
-      this.fillRect(x + 1, y +  4, 4,  1);
-      this.fillRect(x + 2, y +  5, 2,  1);
-      this.fillRect(x + 1, y +  6, 4,  1);
-      this.fillRect(x    , y +  7, 2,  3);
-      this.fillRect(x + 4, y +  7, 2,  3);
-      break;
-    case 89:    // 'Y'
-      this.fillRect(x    , y +  1, 2,  4);
-      this.fillRect(x + 4, y +  1, 2,  4);
-      this.fillRect(x + 1, y +  5, 4,  1);
-      this.fillRect(x + 2, y +  6, 2,  3);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 90:    // 'Z'
-      this.fillRect(x    , y +  3, 1,  1);
-      this.fillRect(x    , y +  2, 2,  1);
-      this.fillRect(x    , y +  1, 7,  1);
-      this.fillRect(x + 4, y +  2, 3,  1);
-      this.fillRect(x + 3, y +  3, 2,  2);
-      this.fillRect(x + 2, y +  5, 2,  1);
-      this.fillRect(x + 1, y +  6, 2,  2);
-      this.fillRect(x    , y +  8, 2,  1);
-      this.fillRect(x    , y +  9, 7,  1);
-      this.fillRect(x + 5, y +  8, 2,  1);
-      this.fillRect(x + 6, y +  7, 1,  1);
-      break;
-    case 91:    // '['
-      this.fillRect(x + 2, y +  1, 4,  1);
-      this.fillRect(x + 2, y +  2, 2,  7);
-      this.fillRect(x + 2, y +  9, 4,  1);
-      break;
-    case 92:    // '\'
-      this.fillRect(x    , y +  2, 1,  2);
-      this.fillRect(x + 1, y +  3, 1,  2);
-      this.fillRect(x + 2, y +  4, 1,  2);
-      this.fillRect(x + 3, y +  5, 1,  2);
-      this.fillRect(x + 4, y +  6, 1,  2);
-      this.fillRect(x + 5, y +  7, 1,  2);
-      this.fillRect(x + 6, y +  8, 1,  2);
-      break;
-    case 93:    // ']'
-      this.fillRect(x + 2, y +  1, 4,  1);
-      this.fillRect(x + 4, y +  2, 2,  7);
-      this.fillRect(x + 2, y +  9, 4,  1);
-      break;
-    case 94:    // '^'
-      this.fillRect(x    , y +  3, 2,  1);
-      this.fillRect(x + 1, y +  2, 2,  1);
-      this.fillRect(x + 2, y +  1, 3,  1);
-      this.fillRect(x + 3, y     , 1,  1);
-      this.fillRect(x + 4, y +  2, 2,  1);
-      this.fillRect(x + 5, y +  3, 2,  1);
-      break;
-    case 95:    // '_'
-      this.fillRect(x    , y + 10, 8,  1);
-      break;
-    case 96:    // '`'
-      this.fillRect(x + 2, y     , 2,  2);
-      this.fillRect(x + 3, y +  2, 2,  1);
-      break;
-    case 97:    // 'a'
-      this.fillRect(x + 1, y +  4, 4,  1);
-      this.fillRect(x + 4, y +  5, 2,  4);
-      this.fillRect(x + 1, y +  6, 3,  1);
-      this.fillRect(x    , y +  7, 2,  2);
-      this.fillRect(x + 1, y +  9, 3,  1);
-      this.fillRect(x + 5, y +  9, 2,  1);
-      break;
-    case 98:    // 'b'
-      this.fillRect(x    , y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 3, y +  4, 3,  1);
-      this.fillRect(x + 5, y +  5, 2,  4);
-      this.fillRect(x    , y +  9, 2,  1);
-      this.fillRect(x + 3, y +  9, 3,  1);
-      break;
-    case 99:    // 'c'
-      this.fillRect(x + 1, y +  4, 4,  1);
-      this.fillRect(x    , y +  5, 2,  4);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 100:   // 'd'
-      this.fillRect(x + 3, y +  1, 1,  1);
-      this.fillRect(x + 4, y +  1, 2,  8);
-      this.fillRect(x + 1, y +  4, 3,  1);
-      this.fillRect(x    , y +  5, 2,  4);
-      this.fillRect(x + 1, y +  9, 3,  1);
-      this.fillRect(x + 5, y +  9, 2,  1);
-      break;
-    case 101:   // 'e'
-      this.fillRect(x + 1, y +  4, 4,  1);
-      this.fillRect(x    , y +  5, 2,  4);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 2, y +  6, 4,  1);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 102:   // 'f'
-      this.fillRect(x + 2, y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 4, y +  2, 2,  1);
-      this.fillRect(x    , y +  5, 5,  1);
-      this.fillRect(x    , y +  9, 4,  1);
-      break;
-    case 103:   // 'g'
-      this.fillRect(x + 1, y +  4, 3,  1);
-      this.fillRect(x + 5, y +  4, 2,  1);
-      this.fillRect(x    , y +  5, 2,  3);
-      this.fillRect(x + 4, y +  5, 2,  6);
-      this.fillRect(x + 1, y +  8, 3,  1);
-      this.fillRect(x    , y + 10, 2,  1);
-      this.fillRect(x + 1, y + 11, 4,  1);
-      break;
-    case 104:   // 'h'
-      this.fillRect(x    , y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 4, y +  4, 2,  1);
-      this.fillRect(x + 3, y +  5, 1,  1);
-      this.fillRect(x + 5, y +  5, 2,  5);
-      this.fillRect(x    , y +  9, 3,  1);
-      break;
-    case 105:   // 'i'
-      this.fillRect(x + 3, y +  1, 2,  2);
-      this.fillRect(x + 1, y +  4, 4,  1);
-      this.fillRect(x + 3, y +  5, 2,  4);
-      this.fillRect(x + 1, y +  9, 6,  1);
-      break;
-    case 106:   // 'j'
-      this.fillRect(x + 4, y +  1, 2,  2);
-      this.fillRect(x + 2, y +  4, 4,  1);
-      this.fillRect(x + 4, y +  5, 2,  6);
-      this.fillRect(x + 1, y + 11, 4,  1);
-      this.fillRect(x    , y +  9, 2,  2);
-      break;
-    case 107:   // 'k'
-      this.fillRect(x    , y +  1, 3,  1);
-      this.fillRect(x + 1, y +  2, 2,  7);
-      this.fillRect(x + 5, y +  4, 2,  1);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 3, y +  6, 2,  1);
-      this.fillRect(x + 4, y +  7, 2,  1);
-      this.fillRect(x + 5, y +  8, 2,  2);
-      this.fillRect(x    , y +  9, 3,  1);
-      break;
-    case 108:   // 'l'
-      this.fillRect(x + 1, y +  1, 4,  1);
-      this.fillRect(x + 3, y +  2, 2,  7);
-      this.fillRect(x + 1, y +  9, 6,  1);
-      break;
-    case 109:   // 'm'
-      this.fillRect(x    , y +  4, 6,  1);
-      this.fillRect(x    , y +  5, 2,  5);
-      this.fillRect(x + 3, y +  5, 1,  4);
-      this.fillRect(x + 5, y +  5, 2,  5);
-      break;
-    case 110:   // 'n'
-      this.fillRect(x    , y +  4, 5,  1);
-      this.fillRect(x    , y +  5, 2,  5);
-      this.fillRect(x + 4, y +  5, 2,  5);
-      break;
-    case 111:   // 'o'
-      this.fillRect(x + 1, y +  4, 4,  1);
-      this.fillRect(x    , y +  5, 2,  4);
-      this.fillRect(x + 4, y +  5, 2,  4);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 112:   // 'p'
-      this.fillRect(x    , y +  4, 2,  1);
-      this.fillRect(x + 3, y +  4, 3,  1);
-      this.fillRect(x + 1, y +  5, 2,  6);
-      this.fillRect(x + 5, y +  5, 2,  4);
-      this.fillRect(x + 3, y +  9, 3,  1);
-      this.fillRect(x    , y + 11, 4,  1);
-      break;
-    case 113:   // 'q'
-      this.fillRect(x + 1, y +  4, 3,  1);
-      this.fillRect(x + 5, y +  4, 2,  1);
-      this.fillRect(x    , y +  5, 2,  4);
-      this.fillRect(x + 4, y +  5, 2,  6);
-      this.fillRect(x + 1, y +  9, 3,  1);
-      this.fillRect(x + 3, y + 11, 4,  1);
-      break;
-    case 114:   // 'r'
-      this.fillRect(x    , y +  4, 3,  1);
-      this.fillRect(x + 4, y +  4, 2,  2);
-      this.fillRect(x + 1, y +  5, 2,  4);
-      this.fillRect(x + 3, y +  6, 1,  1);
-      this.fillRect(x + 5, y +  5, 2,  2);
-      this.fillRect(x    , y +  9, 4,  1);
-      break;
-    case 115:   // 's'
-      this.fillRect(x + 1, y +  4, 4,  1);
-      this.fillRect(x    , y +  5, 2,  1);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 1, y +  6, 2,  1);
-      this.fillRect(x + 3, y +  7, 2,  1);
-      this.fillRect(x    , y +  8, 2,  1);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      this.fillRect(x + 1, y +  9, 4,  1);
-      break;
-    case 116:   // 't'
-      this.fillRect(x + 2, y +  2, 1,  1);
-      this.fillRect(x + 1, y +  3, 2,  6);
-      this.fillRect(x    , y +  4, 6,  1);
-      this.fillRect(x + 2, y +  9, 3,  1);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      break;
-    case 117:   // 'u'
-      this.fillRect(x    , y +  4, 2,  5);
-      this.fillRect(x + 4, y +  4, 2,  5);
-      this.fillRect(x + 1, y +  9, 3,  1);
-      this.fillRect(x + 5, y +  9, 2,  1);
-      break;
-    case 118:   // 'v'
-      this.fillRect(x    , y +  4, 2,  4);
-      this.fillRect(x + 4, y +  4, 2,  4);
-      this.fillRect(x + 1, y +  8, 4,  1);
-      this.fillRect(x + 2, y +  9, 2,  1);
-      break;
-    case 119:   // 'w'
-      this.fillRect(x    , y +  4, 2,  4);
-      this.fillRect(x + 5, y +  4, 2,  4);
-      this.fillRect(x + 3, y +  6, 1,  2);
-      this.fillRect(x + 1, y +  8, 2,  2);
-      this.fillRect(x + 4, y +  8, 2,  2);
-      break;
-    case 120:   // 'x'
-      this.fillRect(x    , y +  4, 2,  1);
-      this.fillRect(x + 5, y +  4, 2,  1);
-      this.fillRect(x + 1, y +  5, 2,  1);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 2, y +  6, 3,  2);
-      this.fillRect(x + 1, y +  8, 2,  1);
-      this.fillRect(x + 4, y +  8, 2,  1);
-      this.fillRect(x    , y +  9, 2,  1);
-      this.fillRect(x + 5, y +  9, 2,  1);
-      break;
-    case 121:   // 'y'
-      this.fillRect(x + 1, y +  4, 2,  4);
-      this.fillRect(x + 5, y +  4, 2,  4);
-      this.fillRect(x + 2, y +  8, 4,  1);
-      this.fillRect(x + 4, y +  9, 2,  1);
-      this.fillRect(x + 3, y + 10, 2,  1);
-      this.fillRect(x    , y + 11, 4,  1);
-      break;
-    case 122:   // 'z'
-      this.fillRect(x    , y +  4, 6,  1);
-      this.fillRect(x    , y +  5, 1,  1);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 3, y +  6, 2,  1);
-      this.fillRect(x + 1, y +  7, 2,  1);
-      this.fillRect(x    , y +  8, 2,  1);
-      this.fillRect(x + 5, y +  8, 1,  1);
-      this.fillRect(x    , y +  9, 6,  1);
-      break;
-    case 123:   // '{'
-      this.fillRect(x + 3, y +  1, 3,  1);
-      this.fillRect(x + 2, y +  2, 2,  2);
-      this.fillRect(x + 1, y +  4, 2,  1);
-      this.fillRect(x    , y +  5, 2,  1);
-      this.fillRect(x + 1, y +  6, 2,  1);
-      this.fillRect(x + 2, y +  7, 2,  2);
-      this.fillRect(x + 3, y +  9, 3,  1);
-      break;
-    case 124:   // '|'
-      this.fillRect(x + 3, y +  1, 2,  4);
-      this.fillRect(x + 3, y +  6, 2,  4);
-      break;
-    case 125:   // '}'
-      this.fillRect(x    , y +  1, 3,  1);
-      this.fillRect(x + 2, y +  2, 2,  2);
-      this.fillRect(x + 3, y +  4, 2,  1);
-      this.fillRect(x + 4, y +  5, 2,  1);
-      this.fillRect(x + 3, y +  6, 2,  1);
-      this.fillRect(x + 2, y +  7, 2,  2);
-      this.fillRect(x    , y +  9, 3,  1);
-      break;
-    case 126:   // '~'
-      this.fillRect(x    , y +  2, 2,  2);
-      this.fillRect(x + 1, y +  1, 3,  1);
-      this.fillRect(x + 3, y +  2, 2,  1);
-      this.fillRect(x + 4, y +  3, 3,  1);
-      this.fillRect(x + 6, y +  2, 1,  1);
-      this.fillRect(x + 6, y +  1, 2,  1);
-      break;
-      
-      // End of hermesDraw() primary switch.
-  }
-  
-  --maxWidth;
-  text = text.substring(1);
-  x += 8;
-  this.hermesDraw(text, x, y, maxWidth);
-  
-  // End of hermesDraw()
+if(typeof module != 'undefined' && module != null && module.exports) {
+  module.exports = HERMES;
 }
-
-// @method proto undefined hermesRedraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font, clearing the area underneath
-CanvasRenderingContext2D.prototype.hermesRedraw = function hermesRedraw(text, x, y, maxWidth, style) {
-  this.clearRect(x, y, 8*(maxWidth || text.length), 12);
-  this.hermesDraw(text, x, y, maxWidth, style);
-}
-

@@ -10,6 +10,20 @@ Dependencies: None
 
 ---
 
+## HERMES
+
+Inherits: None
+
+#### Properties
+
+`Number` **CHAR_HEIGHT** -- Height of a char. Is 12
+
+`Number` **CHAR_WIDTH** -- Width of a char. Is 8
+
+`Object` **DRAW_CALLS** -- Holds coordinates used in .fillRect() calls for each ascii character
+
+---
+
 ## CanvasRenderingContext2D
 
 Inherits: None
