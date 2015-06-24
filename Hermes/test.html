@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+<title>Hermes.js Test</title>
+
+<style type='text/css'>
+body {
+  color: #0F0;
+  background-color: #000;
+}
+#expected_img {
+  display: none;
+}
+</style>
+
+<script type="text/javascript">
+// Frame buster
+if(top !== self) {
+  top.location.replace(self.location.href);
+}
+</script>
+
+<script type="text/javascript" src="./Hermes.js"></script>
+
+<body>
+
+<text id="result"></text>
+
+<br />
+
+Actual:
+
+<br />
+
+<canvas id="actual" width="640" height="384"></canvas>
+
+<br />
+
+Expected:
+
+<br />
+
+<canvas id="expected" width="640" height="384"></canvas>
+<img id="expected_img" src="./test.png"></img>
+
+</body>
+
+<script type="text/javascript">
+
+var actualCanvas = document.getElementById('actual');
+var actual = actualCanvas.getContext('2d');
+actual.fillStyle = 'rgb(255, 255, 255)';
+actual.fillRect(0, 0, actualCanvas.width, actualCanvas.height);
+actual.fillStyle = 'rgb(0, 0, 0)';
+actual.fillRect(1, 1, actualCanvas.width - 2, actualCanvas.height - 2);
+
+actual.fillStyle = 'rgb(0, 255, 0)';
+actual.hermesDraw('Ascii characters test:', 18*HERMES.CHAR_WIDTH, 1*HERMES.CHAR_HEIGHT);
+
+for(var i = 0, endi = 64; i < endi; ++i) {
+  actual.hermesDraw(String.fromCharCode(i), (8 + i)*HERMES.CHAR_WIDTH, 3*HERMES.CHAR_HEIGHT);
+}
+
+for(var i = 64, endi = 128; i < endi; ++i) {
+  actual.hermesDraw(String.fromCharCode(i), (8 + i - 64)*HERMES.CHAR_WIDTH, 4*HERMES.CHAR_HEIGHT);
+}
+
+actual.hermesDraw('Max width test:', 18*HERMES.CHAR_WIDTH, 6*HERMES.CHAR_HEIGHT);
+
+[0, 4, null, undefined, NaN].forEach(function(v, i) {
+  actual.hermesDraw(v + ':', 24*HERMES.CHAR_WIDTH, (8 + i)*HERMES.CHAR_HEIGHT);
+  actual.hermesDraw('abcdefghijklmnopqrstuvwxyz', 35*HERMES.CHAR_WIDTH, (8 + i)*HERMES.CHAR_HEIGHT, v);
+});
+
+actual.hermesDraw('Style test:', 18*HERMES.CHAR_WIDTH, 14*HERMES.CHAR_HEIGHT);
+
+['White', 'cyan', 'rgb(255, 0, 255)', 'rgba(255, 0, 255, 0.5)'].forEach(function(v, i) {
+  actual.hermesDraw(v, 24*HERMES.CHAR_WIDTH, (16 + i)*HERMES.CHAR_HEIGHT, null, v);
+});
+
+actual.fillStyle = 'rgb(0, 255, 0)';
+actual.hermesDraw('Draw/redraw test:', 18*HERMES.CHAR_WIDTH, 21*HERMES.CHAR_HEIGHT);
+
+actual.hermesDraw('.hermesDraw() XYZ:', 24*HERMES.CHAR_WIDTH, 23*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('X', 45*HERMES.CHAR_WIDTH, 23*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Y', 45*HERMES.CHAR_WIDTH, 23*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Z', 45*HERMES.CHAR_WIDTH, 23*HERMES.CHAR_HEIGHT);
+
+actual.hermesDraw('.hermesRedraw() XYZ:', 24*HERMES.CHAR_WIDTH, 24*HERMES.CHAR_HEIGHT);
+actual.hermesRedraw('X', 45*HERMES.CHAR_WIDTH, 24*HERMES.CHAR_HEIGHT);
+actual.hermesRedraw('Y', 45*HERMES.CHAR_WIDTH, 24*HERMES.CHAR_HEIGHT);
+actual.hermesRedraw('Z', 45*HERMES.CHAR_WIDTH, 24*HERMES.CHAR_HEIGHT);
+
+actual.fillStyle = 'rgb(0, 0, 255)';
+actual.hermesDraw('Edge test', 640 - 4.5*HERMES.CHAR_WIDTH, 192 - 0.5*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Edge test', 320 - 4.5*HERMES.CHAR_WIDTH, 384 - 0.5*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Edge test',   0 - 4.5*HERMES.CHAR_WIDTH, 192 - 0.5*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Edge test', 320 - 4.5*HERMES.CHAR_WIDTH,   0 - 0.5*HERMES.CHAR_HEIGHT);
+
+actual.fillStyle = 'rgb(255, 0, 0)';
+actual.hermesDraw('Corner test', 640 - 5.5*HERMES.CHAR_WIDTH,   0 - 0.5*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Corner test', 640 - 5.5*HERMES.CHAR_WIDTH, 384 - 0.5*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Corner test',   0 - 5.5*HERMES.CHAR_WIDTH, 384 - 0.5*HERMES.CHAR_HEIGHT);
+actual.hermesDraw('Corner test',   0 - 5.5*HERMES.CHAR_WIDTH,   0 - 0.5*HERMES.CHAR_HEIGHT);
+
+var expectedCanvas = document.getElementById('expected');
+var expected = expectedCanvas.getContext('2d');
+
+expected.drawImage(document.getElementById('expected_img'), 0, 0);
+
+// Compare images
+var actualPixels = actual.getImageData(0, 0, actualCanvas.width, actualCanvas.height).data;
+var expectedPixels = expected.getImageData(0, 0, expectedCanvas.width, expectedCanvas.height).data;
+
+for(var i = 0, endi = actualCanvas.width; i < endi; ++i) {
+  for(var j = 0, endj = actualCanvas.height; j < endj; ++j) {
+    var pixelStart = 4*i + 4*j*actualCanvas.width;
+    
+    if(actualPixels[pixelStart] !== expectedPixels[pixelStart]) {
+      var actualRGBA = '<' + actualPixels[pixelStart] + ', ' + actualPixels[pixelStart + 1] + ', ' + actualPixels[pixelStart + 2] + ', ' + actualPixels[pixelStart + 3] + '>';
+      var expectedRGBA = '<' + expectedPixels[pixelStart] + ', ' + expectedPixels[pixelStart + 1] + ', ' + expectedPixels[pixelStart + 2] + ', ' + expectedPixels[pixelStart + 3] + '>';
+      
+      var errorString = 'Incorrect pixel value at <' + i + ', ' + j + '> (Expected RGBA = ' + expectedRGBA + ' but found ' + actualRGBA + ')';
+      
+      document.getElementById('result').style.color = '#F00';
+      document.getElementById('result').textContent = 'Failed: ' + errorString;
+      
+      throw new Error(errorString);
+    }
+  }
+}
+
+document.getElementById('result').textContent = 'Passed!';
+
+</script>
