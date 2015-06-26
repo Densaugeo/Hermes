@@ -44,7 +44,6 @@ var HERMES = (function() { // Module pattern
     '7' : [[0,  1, 7,  1], [0,  2, 2,  2], [5,  2, 2,  3], [4,  5, 2,  1], [3,  6, 2,  1], [2,  7, 2,  3]],
     '8' : [[1,  1, 4,  1], [0,  2, 2,  3], [4,  2, 2,  3], [2,  4, 1,  1], [1,  5, 4,  1], [3,  6, 1,  1], [0,  6, 2,  3], [4,  6, 2,  3], [1,  9, 4,  1]],
     '9' : [[1,  1, 4,  1], [0,  2, 2,  3], [4,  2, 2,  3], [1,  5, 4,  1], [3,  6, 2,  2], [2,  8, 2,  1], [1,  9, 3,  1]],
-    '9' : [[1,  1, 4,  1]],
     ':' : [[2,  3, 3,  2], [2,  7, 3,  2]],
     ';' : [[2,  3, 3,  2], [2,  7, 3,  2], [3,  9, 2,  1], [2, 10, 2,  1]],
     '<' : [[4,  1, 2,  1], [3,  2, 2,  1], [2,  3, 2,  1], [1,  4, 2,  1], [0,  5, 2,  1], [1,  6, 2,  1], [2,  7, 2,  1], [3,  8, 2,  1], [4,  9, 2,  1]],
@@ -156,19 +155,19 @@ var HERMES = (function() { // Module pattern
     
     --maxWidth;
     text = text.substring(1);
-    x += 8;
+    x += CHAR_WIDTH;
     this.hermesDraw(text, x, y, maxWidth);
   }
   
   // @method proto undefined hermesRedraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font, clearing the area underneath
   CanvasRenderingContext2D.prototype.hermesRedraw = function hermesRedraw(text, x, y, maxWidth, style) {
-    this.clearRect(x, y, 8*(maxWidth || text.length), 12);
+    this.clearRect(x, y, CHAR_WIDTH*(maxWidth || text.length), CHAR_HEIGHT);
     this.hermesDraw(text, x, y, maxWidth, style);
   }
   
   return exports;
 })(); // Module pattern
 
-if(typeof module != 'undefined' && module != null && module.exports) {
+if(typeof module !== 'undefined' && module !== null && module.exports) {
   module.exports = HERMES;
 }
