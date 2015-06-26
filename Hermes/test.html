@@ -119,7 +119,10 @@ for(var i = 0, endi = actualCanvas.width; i < endi; ++i) {
   for(var j = 0, endj = actualCanvas.height; j < endj; ++j) {
     var pixelStart = 4*i + 4*j*actualCanvas.width;
     
-    if(actualPixels[pixelStart] !== expectedPixels[pixelStart]) {
+    if(actualPixels[pixelStart    ] !== expectedPixels[pixelStart    ] ||
+       actualPixels[pixelStart + 1] !== expectedPixels[pixelStart + 1] ||
+       actualPixels[pixelStart + 2] !== expectedPixels[pixelStart + 2] ||
+       actualPixels[pixelStart + 3] !== expectedPixels[pixelStart + 3]) {
       var actualRGBA = '<' + actualPixels[pixelStart] + ', ' + actualPixels[pixelStart + 1] + ', ' + actualPixels[pixelStart + 2] + ', ' + actualPixels[pixelStart + 3] + '>';
       var expectedRGBA = '<' + expectedPixels[pixelStart] + ', ' + expectedPixels[pixelStart + 1] + ', ' + expectedPixels[pixelStart + 2] + ', ' + expectedPixels[pixelStart + 3] + '>';
       
