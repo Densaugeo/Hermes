@@ -130,10 +130,8 @@ var HERMES = (function() { // Module pattern
   // @method proto undefined hermesDraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font
   CanvasRenderingContext2D.prototype.hermesDraw = function hermesDraw(text, x, y, maxWidth, style) {
     text = String(text) || ' ';
-    x = Number(x) || 0;
-    y = Number(y) || 0;
     
-    // If null, undefined, maxWidth defaults to width of text (i.e. no effect)
+    // If null or undefined, maxWidth defaults to width of text (i.e. no effect)
     if(maxWidth === undefined || maxWidth === null) {
       maxWidth = text.length;
     }
@@ -159,9 +157,9 @@ var HERMES = (function() { // Module pattern
     this.hermesDraw(text, x, y, maxWidth);
   }
   
-  // @method proto undefined hermesRedraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font, clearing the area underneath
+  // @method proto undefined hermesRedraw(String text, Number x, Number y, Number maxWidth, String style) -- Draw a string in antique raster font, clearing the area underneath (clear area determined by maxWidth)
   CanvasRenderingContext2D.prototype.hermesRedraw = function hermesRedraw(text, x, y, maxWidth, style) {
-    this.clearRect(x, y, CHAR_WIDTH*(maxWidth || text.length), CHAR_HEIGHT);
+    this.clearRect(x, y, CHAR_WIDTH*maxWidth, CHAR_HEIGHT);
     this.hermesDraw(text, x, y, maxWidth, style);
   }
   

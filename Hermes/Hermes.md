@@ -42,5 +42,5 @@ ctx.hermesDraw('Hello world!', 100, 200, null, rgb('255, 128, 0')); // Draws 'He
 
 `undefined` proto **hermesDraw**`(String text, Number x, Number y, Number maxWidth, String style)` -- Draw a string in antique raster font
 
-`undefined` proto **hermesRedraw**`(String text, Number x, Number y, Number maxWidth, String style)` -- Draw a string in antique raster font, clearing the area underneath
+`undefined` proto **hermesRedraw**`(String text, Number x, Number y, Number maxWidth, String style)` -- Draw a string in antique raster font, clearing the area underneath (clear area determined by maxWidth)
 
