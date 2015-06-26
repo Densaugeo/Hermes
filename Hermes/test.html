@@ -94,6 +94,18 @@ actual.hermesRedraw('X', 45*HERMES.CHAR_WIDTH, 24*HERMES.CHAR_HEIGHT);
 actual.hermesRedraw('Y', 45*HERMES.CHAR_WIDTH, 24*HERMES.CHAR_HEIGHT);
 actual.hermesRedraw('Z', 45*HERMES.CHAR_WIDTH, 24*HERMES.CHAR_HEIGHT);
 
+actual.hermesDraw('Overlapping draw call test:', 18*HERMES.CHAR_WIDTH, 26*HERMES.CHAR_HEIGHT);
+
+actual.fillStyle = 'rgba(0, 255, 0, 0.5)';
+
+for(var i = 0, endi = 64; i < endi; ++i) {
+  actual.hermesDraw(String.fromCharCode(i), (8 + i)*HERMES.CHAR_WIDTH, 28*HERMES.CHAR_HEIGHT);
+}
+
+for(var i = 64, endi = 128; i < endi; ++i) {
+  actual.hermesDraw(String.fromCharCode(i), (8 + i - 64)*HERMES.CHAR_WIDTH, 29*HERMES.CHAR_HEIGHT);
+}
+
 actual.fillStyle = 'rgb(0, 0, 255)';
 actual.hermesDraw('Edge test', 640 - 4.5*HERMES.CHAR_WIDTH, 192 - 0.5*HERMES.CHAR_HEIGHT);
 actual.hermesDraw('Edge test', 320 - 4.5*HERMES.CHAR_WIDTH, 384 - 0.5*HERMES.CHAR_HEIGHT);
