@@ -1,0 +1,24 @@
+{
+  "name": "hermes",
+  "main": "Hermes.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Densaugeo/Hermes",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Densaugeo/Hermes.git"
+  },
+  "authors": [
+    "Densaugeo <you@example.com>"
+  ],
+  "description": "Writes on html canvas with an old-style terminal raster font",
+  "moduleType": [
+    "globals",
+    "node",
+    "amd"
+  ],
+  "keywords": [
+    "canvas"
+  ],
+  "license": "MIT",
+  "ignore": []
+}
