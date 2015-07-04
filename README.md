@@ -1,23 +1,38 @@
-# Misc-JS
+# Hermes
 
 [![Code Climate](https://codeclimate.com/github/Densaugeo/Misc-JS/badges/gpa.svg)](https://codeclimate.com/github/Densaugeo/Misc-JS)
 
-Miscellanous useful JavaScripts
+Writes on html canvas with an old-style terminal raster font
 
-## PersistentWS
-
-Provides a construcotr for WebSockets that automatically attempt to reconnect after being disconnected. Reconnection times start at ~5s for the first attempt, double after each failed attempt, and are randomized by +/- 10% to prevent clients from reconnecting at the exact same time after a server event.
-
-To use, add PersistentWS/PersistentWS.js from this repo to your webserver root and include this HTML/JS:
+To install, add Hermes.js from this repo to your webserver root or install with bower
 
 ~~~
-<script type="text/javascript" src="/PersistentWS.js"></script>
+wget https://raw.githubusercontent.com/Densaugeo/Hermes/master/Hermes.js
 
-var pws = new PersistentWS({url: 'wss://your.websocket/server'});
+OR
 
-pws.addEventListener('message', function(message) {
-  console.log('Received: ' + message);
-});
+bower install --save git://github.com/Densaugeo/Hermes.git
 ~~~
 
-.addEventListener() and .removeEventListener should be called on the PersistentWS object and not on the raw socket, to allow events to be reattached properly after reconnections.
+Hermes is then available from the Hermes.js file:
+
+~~~
+<script type="text/javascript" src="/Hermes.js"></script>
+
+<!--Or link from your bower folder-->
+<script type="text/javascript" src="/bower_components/hermes/Hermes.js"></script>
+
+<script type="text/javascript">
+
+var ctx = someCanvasElement.getContext('2d');
+ctx.hermesDraw('Hello world!', 100, 200); // Draws 'Hello world!' starting at 100, 200
+ctx.hermesDraw('Hello world!', 100, 200, null, rgb('255, 128, 0')); // Draws 'Hello world!' starting at 100, 200 in orange
+
+</script>
+~~~
+
+Note that Hermes adds the .hermesDraw() and .hermesRedraw() methods to the built-in CanvasRenderingContext2D prototype. You can call these methods just like any other canvas drawing method.
+
+## License
+
+MIT
