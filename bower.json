@@ -1,14 +1,14 @@
 {
   "name": "hermes",
   "main": "Hermes.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/Densaugeo/Hermes",
   "repository": {
     "type": "git",
     "url": "git://github.com/Densaugeo/Hermes.git"
   },
   "authors": [
-    "Densaugeo <you@example.com>"
+    "Densaugeo <you@example.com> (http://www.madengineersworkshop.net/)"
   ],
   "description": "Writes on html canvas with an old-style terminal raster font",
   "moduleType": [
@@ -24,5 +24,12 @@
     ".git",
     ".jshintrc",
     "test*"
-  ]
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "resolutions": {
+  },
+  "private": false
 }
