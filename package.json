@@ -7,29 +7,16 @@
     "type": "git",
     "url": "git://github.com/Densaugeo/Hermes.git"
   },
-  "authors": [
-    "Densaugeo <you@example.com> (http://www.madengineersworkshop.net/)"
-  ],
+  "bugs": "https://github.com/Densaugeo/Hermes/issues",
+  "author": "Densaugeo <a@b.c> (http://www.madengineersworkshop.net/)",
   "description": "Writes on html canvas with an old-style terminal raster font",
-  "moduleType": [
-    "globals",
-    "node",
-    "amd"
-  ],
   "keywords": [
     "canvas"
   ],
   "license": "MIT",
-  "ignore": [
-    ".git",
-    ".jshintrc",
-    "test*"
-  ],
   "dependencies": {
   },
   "devDependencies": {
-  },
-  "resolutions": {
   },
   "private": false
 }
