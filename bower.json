@@ -1,35 +1,31 @@
 {
   "name": "hermes",
+  "description": "Writes on html canvas with an old-style terminal raster font",
+  "version": "0.0.5",
   "main": "Hermes.js",
-  "version": "0.0.4",
   "homepage": "https://github.com/Densaugeo/Hermes",
   "repository": {
     "type": "git",
     "url": "git://github.com/Densaugeo/Hermes.git"
   },
-  "authors": [
-    "Densaugeo <you@example.com> (http://www.madengineersworkshop.net/)"
-  ],
-  "description": "Writes on html canvas with an old-style terminal raster font",
-  "moduleType": [
-    "globals",
-    "node",
-    "amd"
-  ],
   "keywords": [
     "canvas"
   ],
   "license": "MIT",
+  "private": false,
+  "dependencies": {
+  },
+  "authors": [
+    "Densaugeo <you@example.com> (http://www.madengineersworkshop.net/)"
+  ],
   "ignore": [
     ".git",
     ".jshintrc",
     "test*"
   ],
-  "dependencies": {
-  },
-  "devDependencies": {
-  },
-  "resolutions": {
-  },
-  "private": false
+  "moduleType": [
+    "globals",
+    "node",
+    "amd"
+  ]
 }
