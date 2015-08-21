@@ -4,10 +4,14 @@
 
 Writes on html canvas with an old-style terminal raster font
 
-To install, add Hermes.js from this repo to your webserver root or install with bower
+To install, add Hermes.js from this repo to your webserver root or install with npm or bower
 
 ~~~
 wget https://raw.githubusercontent.com/Densaugeo/Hermes/master/Hermes.js
+
+OR
+
+npm install --save git://github.com/Densaugeo/Hermes.git
 
 OR
 
