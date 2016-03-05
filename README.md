@@ -39,4 +39,4 @@ Note that Hermes adds the .hermesDraw() and .hermesRedraw() methods to the built
 
 ## License
 
-MIT
+LGPL

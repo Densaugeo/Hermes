@@ -11,11 +11,11 @@
   "keywords": [
     "canvas"
   ],
-  "license": "MIT",
   "private": false,
   "dependencies": {
   },
   "author": "Densaugeo <a@b.c> (http://www.madengineersworkshop.net/)",
+  "license": "LGPL-2.1+",
   "files": [
     "bower.json",
     "Hermes.js",
