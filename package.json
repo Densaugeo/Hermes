@@ -1,6 +1,6 @@
 {
   "name": "hermes",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Writes on html canvas with an old-style terminal raster font",
   "keywords": [
     "canvas"
